@@ -1,0 +1,19 @@
+* How Gitorious works
+* Installing Gitorious
+* Using Gitorious
+* Keep Gitorious running smoothly
+** Monit
+** Diagnostics tasks
+* Backup, snapshotting, cloning & disaster recovery
+* Developing Gitorious
+** Setting up dev env
+** Submitting patches and merge requests
+* Contributing to the project
+** Bug reports
+** Merge Requests
+** Community funded features
+* Need more help? 
+** Google Group
+** IRC
+** Gitorious AS services & products
+* Feedback
