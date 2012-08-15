@@ -7,6 +7,7 @@
 ** How the git backend works
 File structure, how we handle incoming ssh/git operations, the gitorious script
 ** FOSS licensing
+** Gitorious AS services
 * Installation
 ** Overview - common steps
 ** Distro specific instructions
@@ -32,9 +33,9 @@ File structure, how we handle incoming ssh/git operations, the gitorious script
 * Troubleshooting
 ** Current common sticking points
 *** Repo creation getting stuck
-**** 
+*** ...
 * Developing
-** Setting up dev env
+** Setting up your development environment
 ** Submitting patches and merge requests
 * Contributing
 ** Bug reports
@@ -42,6 +43,6 @@ File structure, how we handle incoming ssh/git operations, the gitorious script
 ** Community funded features
 * Need more help? 
 ** Google Group
-** IRC
+** #gitorious on IRC
 ** Gitorious AS services & products
 * Feedback
