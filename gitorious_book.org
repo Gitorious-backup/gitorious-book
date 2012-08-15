@@ -1,14 +1,42 @@
+* Introduction
 * How Gitorious works
-* Installing Gitorious
-* Using Gitorious
-* Keep Gitorious running smoothly
+** Features & benefits
+** Overview: services, processes, packages
+** How the web frontend works
+   Briefly describe Rails/web architecture
+** How the git backend works
+File structure, how we handle incoming ssh/git operations, the gitorious script
+** FOSS licensing
+* Installation
+** Overview - common steps
+** Distro specific instructions
+*** CentOS / RHEL
+*** Debian / Ubuntu
+* Using the web frontend
+(Tour of the UI, how to do stuff. Add after UI overhaul)
+* Authentication & authorization
+** LDAP integration
+** Private projects/repositories
+* Keeping your site up
 ** Monit
-** Diagnostics tasks
-* Backup, snapshotting, cloning & disaster recovery
-* Developing Gitorious
+** Diagnostics
+* Backup & disaster recovery
+* Scaling
+** Caching with Vagrant
+** Horizontal scaling 
+   what sort of hardware will you need to keep a single server running
+   under misc typical usage scenarios?
+** Vertical scaling
+   distributing the load over multiple serves
+** Repository hashing/sharding
+* Troubleshooting
+** Current common sticking points
+*** Repo creation getting stuck
+**** 
+* Developing
 ** Setting up dev env
 ** Submitting patches and merge requests
-* Contributing to the project
+* Contributing
 ** Bug reports
 ** Merge Requests
 ** Community funded features
