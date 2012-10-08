@@ -24,7 +24,7 @@ File structure, how we handle incoming ssh/git operations, the gitorious script
 * Backup & disaster recovery
 * Scaling
 ** Caching with Vagrant
-** Horizontal scaling 
+** Horizontal scaling
    what sort of hardware will you need to keep a single server running
    under misc typical usage scenarios?
 ** Vertical scaling
@@ -41,8 +41,9 @@ File structure, how we handle incoming ssh/git operations, the gitorious script
 ** Bug reports
 ** Merge Requests
 ** Community funded features
-* Need more help? 
+* Need more help?
 ** Google Group
 ** #gitorious on IRC
 ** Gitorious AS services & products
 * Feedback
+* Frequently Asked Questions
