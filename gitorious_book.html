@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="The Gitorious Book"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2012-10-17 22:12:58 CEST"/>
+<meta name="generated" content="2012-10-17 22:30:09 CEST"/>
 <meta name="author" content="Thomas Kjeldahl Nilsson"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -583,9 +583,13 @@ To display a changelog for changes between your current version and
 another version, run the tool with the `VERSION` environment variable
 set:
 </p>
-<p>
-<code>bundle exec rake changelog VERSION=2.0.1</code>
-</p>
+
+
+
+<pre class="src src-shell">bundle exec rake changelog VERSION=2.0.1
+</pre>
+
+
 </li>
 </ul>
 <ul>
@@ -607,12 +611,16 @@ actual install.
 <p>
 Patch upgrades should be trivial in nature. The steps are simple:
 </p>
-<p>
-    <code>cd /path/to/gitorious</code>
-    <code>git fetch git://gitorious.org/gitorious/mainline.git</code>
-    <code>git merge v2.x.y</code>
-    <code>rake assets:clear</code>
-</p>
+
+
+
+<pre class="src src-shell">cd /path/to/gitorious
+git fetch git://gitorious.org/gitorious/mainline.git
+git merge v2.x.y
+rake assets:clear
+</pre>
+
+
 <p>
 Note that `rake assets:clear` was not available prior to 2.1.0. 2.0.x
 can be directly upgraded to 2.1.0, see below.
@@ -620,11 +628,15 @@ can be directly upgraded to 2.1.0, see below.
 <p>
 As of 2.1.0 you also need these steps for any upgrade:
 </p>
-<p>
-    <code>git submodule init</code>
-    <code>git submodule update</code>
-    <code>rake db:migrate</code>
-</p>
+
+
+
+<pre class="src src-shell">git submodule init
+git submodule update
+rake db:migrate
+</pre>
+
+
 <p>
 Finally, restart all services. This includes the webserver, the poller
 and the git daemon. x/y depends on the actual version.
@@ -674,18 +686,16 @@ A longer description appears here
 <p>
 This looks good, so let's upgrade:
 </p>
-<p>
-<code>git fetch git://gitorious.org/gitorious/mainline.git</code>
-</p>
-<p>
-<code>git merge v2.0.0</code>
-</p>
-<p>
-<code>rm public/stylesheets/all.css public/javascripts/all.js public/javascripts/capillary.js public/**/*/gts-*.*</code>
-</p>
-<p>
-<code>touch tmp/restart.txt</code>
-</p>
+
+
+
+<pre class="src src-shell">git fetch git://gitorious.org/gitorious/mainline.git
+git merge v2.0.0
+rm public/stylesheets/all.css public/javascripts/all.js public/javascripts/capillary.js public/**/*/gts-*.*
+touch tmp/restart.txt
+</pre>
+
+
 </li>
 </ul>
 <ul>
@@ -694,42 +704,48 @@ This looks good, so let's upgrade:
 <p>
 You can upgrade directly from any 2.0.x version directly to 2.1.0. Start by reviewing changes:
 </p>
-<p>
-    <code>bundle exec rake changelog VERSION=2.1.0</code>
-</p>
+
+
+
+<pre class="src src-shell">bundle exec rake changelog VERSION=2.1.0
+</pre>
+
+
 <p>
 If this looks good, back up everything (see above), and get started:
 </p>
+
+
+
+<pre class="src src-shell">git fetch git://gitorious.org/gitorious/mainline.git
+git merge v2.1.0
+rake assets:clear
+</pre>
+
+
 <p>
-    <code>git fetch git://gitorious.org/gitorious/mainline.git</code>
+Gitorious now has submodules. Initialize and pull them, then upgrade
+the database.
 </p>
-<p>
-    <code>git merge v2.1.0</code>
-</p>
-<p>
-    <code>rake assets:clear</code>
-</p>
-<p>
-Gitorious now has submodules. Initialize and pull them:
-</p>
-<p>
-    <code>git submodule init</code>
-</p>
-<p>
-    <code>git submodule update</code>
-</p>
-<p>
-Upgrade the database:
-</p>
-<p>
-    <code>rake db:migrate</code>
-</p>
+
+
+
+<pre class="src src-shell">git submodule init
+git submodule update
+rake db:migrate
+</pre>
+
+
 <p>
 Then restart your server (assuming you're using Passenger):
 </p>
-<p>
-    <code>touch tmp/restart.txt</code>
-</p>
+
+
+
+<pre class="src src-shell">touch tmp/restart.txt
+</pre>
+
+
 </li>
 </ul>
 <ul>
@@ -738,36 +754,46 @@ Then restart your server (assuming you're using Passenger):
 <p>
 You can upgrade directly from any 2.1.x version directly to 2.2.0. Start by reviewing changes:
 </p>
-<p>
-    <code>bundle exec rake changelog VERSION=2.2.0</code>
-</p>
+
+
+
+<pre class="src src-shell">bundle exec rake changelog VERSION=2.2.0
+</pre>
+
+
 <p>
 If this looks good, back up everything (see above), and get started:
 </p>
-<p>
-    <code>git fetch git://gitorious.org/gitorious/mainline.git</code>
-</p>
-<p>
-    <code>git merge v2.2.0</code>
-</p>
-<p>
-    <code>rake assets:clear</code>
-</p>
-<p>
-    <code>git submodule --init update</code>
-</p>
+
+
+
+<pre class="src src-shell">git fetch git://gitorious.org/gitorious/mainline.git
+git merge v2.2.0
+rake assets:clear
+git submodule --init update
+</pre>
+
+
 <p>
 Upgrade the database:
 </p>
-<p>
-    <code>rake db:migrate</code>
-</p>
+
+
+
+<pre class="src src-shell">rake db:migrate
+</pre>
+
+
 <p>
 Then restart your server (assuming you're using Passenger):
 </p>
-<p>
-    <code>touch tmp/restart.txt</code>
-</p>
+
+
+
+<pre class="src src-shell">touch tmp/restart.txt
+</pre>
+
+
 <p>
 If you want to use the new <a href="#private-repositories-feature">https://gitorious.org/gitorious/pages/PrivateRepositories</a>, set the
 <code>enable_private_repositories</code> setting to `true` in
@@ -782,42 +808,56 @@ config/gitorious.sample.yml for more information.
 <p>
 You can upgrade directly from any 2.2.x version directly to 2.3.0. Start by reviewing changes:
 </p>
-<p>
-    <code>bundle exec rake changelog VERSION=2.3.0</code>
-</p>
+
+
+
+<pre class="src src-shell">bundle exec rake changelog VERSION=2.3.0=
+</pre>
+
+
 <p>
 If this looks good, back up everything (see above), and get started:
 </p>
-<p>
-    <code>git fetch git://gitorious.org/gitorious/mainline.git</code>
-</p>
-<p>
-    <code>git merge v2.3.0</code>
-</p>
-<p>
-    <code>rake assets:clear</code>
-</p>
+
+
+
+<pre class="src src-shell">git fetch git://gitorious.org/gitorious/mainline.git
+git merge v2.3.0
+rake assets:clear
+</pre>
+
+
 <p>
 Gitorious now has submodules. Initialize and pull them:
 </p>
-<p>
-    <code>git submodule init</code>
-</p>
-<p>
-    <code>git submodule update</code>
-</p>
+
+
+
+<pre class="src src-shell">git submodule init
+git submodule update
+</pre>
+
+
 <p>
 Upgrade the database:
 </p>
-<p>
-    <code>rake db:migrate</code>
-</p>
+
+
+
+<pre class="src src-shell">rake db:migrate=
+</pre>
+
+
 <p>
 Then restart your server (assuming you're using Passenger):
 </p>
-<p>
-    <code>touch tmp/restart.txt</code>
-</p>
+
+
+
+<pre class="src src-shell">touch tmp/restart.txt
+</pre>
+
+
 </li>
 </ul>
 <ul>
@@ -826,21 +866,17 @@ Then restart your server (assuming you're using Passenger):
 <p>
 To upgrade from version 2.3.0 to 2.3.1, follow these steps:
 </p>
-<p>
-    <code>git fetch git://gitorious.org/gitorious/mainline.git</code>
-</p>
-<p>
-    <code>git merge v2.3.1</code>
-</p>
-<p>
-    <code>bundle install</code>
-</p>
-<p>
-    <code>rake assets:clear</code>
-</p>
-<p>
-    <code>touch tmp/restart.txt</code>
-</p>
+
+
+
+<pre class="src src-shell">git fetch git://gitorious.org/gitorious/mainline.git
+git merge v2.3.1
+bundle install
+rake assets:clear
+touch tmp/restart.txt
+</pre>
+
+
 </li>
 </ul>
 </div>
