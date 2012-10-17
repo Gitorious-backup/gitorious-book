@@ -13,6 +13,18 @@ File structure, how we handle incoming ssh/git operations, the gitorious script
 ** Distro specific instructions
 *** CentOS / RHEL
 *** Debian / Ubuntu
+* Upgrades
+
+** Approach 1: Upgrade current software
+
+git pull origin master | git pull origin TAG/VERSION
+git submodule init
+db:migrate
+rake assets:clear
+touch tmp/restart.txt
+
+** Approach 2: Snapshot old instance, reinstall, restore old state
+
 * Using the web frontend
 (Tour of the UI, how to do stuff. Add after UI overhaul)
 * Authentication & authorization
