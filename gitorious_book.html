@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>The Gitorious Book</title>
-<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="The Gitorious Book"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2012-10-17 21:14:40 CEST"/>
+<meta name="generated" content="2012-10-17 22:12:58 CEST"/>
 <meta name="author" content="Thomas Kjeldahl Nilsson"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -145,8 +145,17 @@
 </li>
 <li><a href="#sec-5">Upgrades</a>
 <ul>
-<li><a href="#sec-5-1">Approach 1: Upgrade current software</a></li>
-<li><a href="#sec-5-2">Approach 2: Snapshot old instance, reinstall, restore old state</a></li>
+<li><a href="#sec-5-1">Versioning</a>
+<ul>
+<li><a href="#sec-5-1-1">Risks of upgrading</a></li>
+<li><a href="#sec-5-1-2">Patch versions</a></li>
+<li><a href="#sec-5-1-3">Minor versions</a></li>
+<li><a href="#sec-5-1-4">Major versions</a></li>
+<li><a href="#sec-5-1-5">How often/when will Gitorious update its version?</a></li>
+</ul>
+</li>
+<li><a href="#sec-5-2">Approach 1: Manual upgrade</a></li>
+<li><a href="#sec-5-3">Approach 2: Snapshot old instance, restore state in a newly installed instance</a></li>
 </ul>
 </li>
 <li><a href="#sec-6">Authentication &amp; authorization</a>
@@ -170,7 +179,7 @@
 <ul>
 <li><a href="#sec-8-4-1">Backup and disaster recovery</a></li>
 <li><a href="#sec-8-4-2">Migrations and clones</a></li>
-<li><a href="#sec-8-4-3">Upgrading ****</a></li>
+<li><a href="#sec-8-4-3">Upgrading</a></li>
 <li><a href="#sec-8-4-4">Snapshots and rollbacks for development and testing</a></li>
 </ul></li>
 </ul>
@@ -199,7 +208,7 @@
 <ul>
 <li><a href="#sec-12-2-1">Setting up your development environment</a></li>
 <li><a href="#sec-12-2-2">Deploying and testing your code in a "cleanroom" VM</a></li>
-<li><a href="#sec-12-2-3">Coding style</a></li>
+<li><a href="#sec-12-2-3">Coding styleguide</a></li>
 <li><a href="#sec-12-2-4">Branching model</a></li>
 </ul>
 </li>
@@ -398,37 +407,463 @@
 </div>
 
 <div id="outline-container-5" class="outline-2">
-<h2 id="sec-5"><span class="todo TODO">TODO</span> Upgrades</h2>
+<h2 id="sec-5">Upgrades</h2>
 <div class="outline-text-2" id="text-5">
 
 
 </div>
 
 <div id="outline-container-5-1" class="outline-3">
-<h3 id="sec-5-1">Approach 1: Upgrade current software</h3>
+<h3 id="sec-5-1">Versioning</h3>
 <div class="outline-text-3" id="text-5-1">
 
 
 <p>
-git pull origin master
-git checkout NEXT<sub>TAG</sub>
-git submodule init
-db:migrate
-rake assets:clear
-touch tmp/restart.txt
+As of July 7th 2011, Gitorious adopted a standard versioning scheme,
+and the initial version was 2.0.0. This version was chosen
+arbitrarily, but we chose 2 over 1 to reflect the fact that Gitorious
+has been through a few major changes since its inception, and we've
+had been around for almost 4 years at that point.
+</p>
+<p>
+Below you can read about the types of changes and what they demand
+from someone upgrading Gitorious. The changes are listed in order of
+most to least frequent. Releases are available as tags of the form
+“vx.y.z” in the Gitorious mainline repository.
+</p>
+
+</div>
+
+<div id="outline-container-5-1-1" class="outline-4">
+<h4 id="sec-5-1-1">Risks of upgrading</h4>
+<div class="outline-text-4" id="text-5-1-1">
+
+
+<p>
+We will do our best to keep releases stable. Every release will be run
+in production on gitorious.org prior to being tagged.
 </p>
 </div>
 
 </div>
 
+<div id="outline-container-5-1-2" class="outline-4">
+<h4 id="sec-5-1-2">Patch versions</h4>
+<div class="outline-text-4" id="text-5-1-2">
+
+
+<p>
+Patch versions indicate changes with minor impact for installs. In
+general, the rules for patch versions are:
+</p>
+<ul>
+<li>Should not require database migrations
+</li>
+<li>Should not require configuration changes or additions
+</li>
+<li>Should not require changes in CSS (e.g. by changing existing markup)
+</li>
+</ul>
+
+
+<p>
+In general: If you have a local install, you should be able to safely
+upgrade patch releases without changing anything, even if you have
+local CSS adjustments.
+</p>
+<p>
+Because of these restrictions, patch upgrades should be considered
+fairly trivial and of minimal risk. Refer to Upgrading for information
+on checking your current version and upgrading.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5-1-3" class="outline-4">
+<h4 id="sec-5-1-3">Minor versions</h4>
+<div class="outline-text-4" id="text-5-1-3">
+
+
+<p>
+Minor versions are bigger changes or changes that require action on
+your part other than simply pulling from Git and restarting your
+app. These changes may include:
+</p>
+<ul>
+<li>Database migrations
+</li>
+<li>Required configuration changes and/or additions
+</li>
+<li>Substantial changes/additions to the view
+</li>
+<li>API changes in models and key lib classes
+</li>
+</ul>
+
+
+<p>
+Each minor version will receive its own entry in the documentation
+chapter you're currently reading.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5-1-4" class="outline-4">
+<h4 id="sec-5-1-4">Major versions</h4>
+<div class="outline-text-4" id="text-5-1-4">
+
+
+<p>
+Major versions will presumably occur infrequently, and there is no
+specific rules to trigger an upgrade. Our rule of thumb right now is
+that if a new version of Gitorious requires an entirely new
+installation guide of its own, it’s probably a major release. However,
+we may also up the major version number due to the addition of
+substantial new features, redesigns and whatnot.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5-1-5" class="outline-4">
+<h4 id="sec-5-1-5">How often/when will Gitorious update its version?</h4>
+<div class="outline-text-4" id="text-5-1-5">
+
+
+<p>
+Releases will be made on an irregular schedule, and will coincide with
+gitorious.org deployments, but not in a 1:1 ratio. Occasionally we
+deploy Gitorious a number of times throughout a single week, but do
+not expect more than one version per week. Follow this page, or better
+– the mailing list for updates.
+</p>
+</div>
+</div>
+
+</div>
+
 <div id="outline-container-5-2" class="outline-3">
-<h3 id="sec-5-2">Approach 2: Snapshot old instance, reinstall, restore old state</h3>
+<h3 id="sec-5-2">Approach 1: Manual upgrade</h3>
 <div class="outline-text-3" id="text-5-2">
 
 
 <p>
-See backup/recovery chapter
-</p></div>
+If your version of Gitorious is really old, please start with this
+guide: <a href="https://gitorious.org/gitorious/pages/LegacyUpgrade">LegacyUpgrade</a> ("really old" = older than February 3rd
+2009/92bb70a1).
+</p>
+<p>
+If your version Gitorious is only a little old, refer to <a href="https://gitorious.org/gitorious/pages/BundlerSetup">BundlerSetup</a>
+("a little old" = older than January 24th 2011/c44237f).
+</p>
+<ul>
+<li id="sec-5-2-1">The changelog tool<br/>
+
+<p>
+As of Gitorious 2.0.0, Gitorious ships with a simple changelog
+tool. The tool consists of a single rake task that can tell you what
+version you are currently on and what versions are available to
+you. To use it, invoke the following command from the root of your
+installation:
+</p>
+<p>
+<code>bundle exec rake changelog</code>
+</p>
+<p>
+The tool will give you a list of available version along with an arrow
+indicating your current version. If the arrow points to a green
+number, you're on top of things. If it points to a red number, it
+means that upgrades are available, and you are encouraged to stay up
+to date.
+</p>
+<p>
+To display a changelog for changes between your current version and
+another version, run the tool with the `VERSION` environment variable
+set:
+</p>
+<p>
+<code>bundle exec rake changelog VERSION=2.0.1</code>
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-5-2-2">Before upgrading<br/>
+
+<p>
+No matter how simple an upgrade may look, we strongly encourage you to
+always back up your database and repository data prior to upgrades. If
+nothing else, an upgrade is a good time to get some snapshots if you
+don't already have scheduled backups of your system. It's also a good
+idea to keep a copy of Gitorious configuration files outside the
+actual install.
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-5-2-3">Upgrading patch versions<br/>
+
+<p>
+Patch upgrades should be trivial in nature. The steps are simple:
+</p>
+<p>
+    <code>cd /path/to/gitorious</code>
+    <code>git fetch git://gitorious.org/gitorious/mainline.git</code>
+    <code>git merge v2.x.y</code>
+    <code>rake assets:clear</code>
+</p>
+<p>
+Note that `rake assets:clear` was not available prior to 2.1.0. 2.0.x
+can be directly upgraded to 2.1.0, see below.
+</p>
+<p>
+As of 2.1.0 you also need these steps for any upgrade:
+</p>
+<p>
+    <code>git submodule init</code>
+    <code>git submodule update</code>
+    <code>rake db:migrate</code>
+</p>
+<p>
+Finally, restart all services. This includes the webserver, the poller
+and the git daemon. x/y depends on the actual version.
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-5-2-4">Upgrading customized installs<br/>
+
+<p>
+If your Gitorious setup has changes, you may experience conflicts when
+pulling in changes. It is recommended to push your patched version of
+Gitorious somewhere, for example to itself, so you can easily clone
+Gitorious to a local machine, or somewhere else on the server to make
+sure that the patch will apply cleanly before attempting the upgrade.
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-5-2-5">Sample upgrade<br/>
+
+<p>
+Assuming you are on v2.0.0 or newer:
+</p>
+
+
+
+<pre class="src src-shell">bundle exec rake changelog
+Available versions
+v2.0.1              Next increment
+-&gt; v2.0.0           First versioned version of Gitorious
+</pre>
+
+
+<p>
+Obviously, there's a new version in town, so let's see what it offers:
+</p>
+
+
+
+<pre class="src src-shell">bundle exec rake changelog VERSION=2.0.1
+Changes between v2.0.0 and v2.0.1:
+A longer description appears here
+</pre>
+
+
+<p>
+This looks good, so let's upgrade:
+</p>
+<p>
+<code>git fetch git://gitorious.org/gitorious/mainline.git</code>
+</p>
+<p>
+<code>git merge v2.0.0</code>
+</p>
+<p>
+<code>rm public/stylesheets/all.css public/javascripts/all.js public/javascripts/capillary.js public/**/*/gts-*.*</code>
+</p>
+<p>
+<code>touch tmp/restart.txt</code>
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-5-2-6">Upgrading from 2.0.x to 2.1<br/>
+
+<p>
+You can upgrade directly from any 2.0.x version directly to 2.1.0. Start by reviewing changes:
+</p>
+<p>
+    <code>bundle exec rake changelog VERSION=2.1.0</code>
+</p>
+<p>
+If this looks good, back up everything (see above), and get started:
+</p>
+<p>
+    <code>git fetch git://gitorious.org/gitorious/mainline.git</code>
+</p>
+<p>
+    <code>git merge v2.1.0</code>
+</p>
+<p>
+    <code>rake assets:clear</code>
+</p>
+<p>
+Gitorious now has submodules. Initialize and pull them:
+</p>
+<p>
+    <code>git submodule init</code>
+</p>
+<p>
+    <code>git submodule update</code>
+</p>
+<p>
+Upgrade the database:
+</p>
+<p>
+    <code>rake db:migrate</code>
+</p>
+<p>
+Then restart your server (assuming you're using Passenger):
+</p>
+<p>
+    <code>touch tmp/restart.txt</code>
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-5-2-7">Upgrading from 2.1.x to 2.2<br/>
+
+<p>
+You can upgrade directly from any 2.1.x version directly to 2.2.0. Start by reviewing changes:
+</p>
+<p>
+    <code>bundle exec rake changelog VERSION=2.2.0</code>
+</p>
+<p>
+If this looks good, back up everything (see above), and get started:
+</p>
+<p>
+    <code>git fetch git://gitorious.org/gitorious/mainline.git</code>
+</p>
+<p>
+    <code>git merge v2.2.0</code>
+</p>
+<p>
+    <code>rake assets:clear</code>
+</p>
+<p>
+    <code>git submodule --init update</code>
+</p>
+<p>
+Upgrade the database:
+</p>
+<p>
+    <code>rake db:migrate</code>
+</p>
+<p>
+Then restart your server (assuming you're using Passenger):
+</p>
+<p>
+    <code>touch tmp/restart.txt</code>
+</p>
+<p>
+If you want to use the new <a href="#private-repositories-feature">https://gitorious.org/gitorious/pages/PrivateRepositories</a>, set the
+<code>enable_private_repositories</code> setting to `true` in
+config/gitorious.yml. See the sample configuration in
+config/gitorious.sample.yml for more information.
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-5-2-8">Upgrading from 2.2.x to 2.3<br/>
+
+<p>
+You can upgrade directly from any 2.2.x version directly to 2.3.0. Start by reviewing changes:
+</p>
+<p>
+    <code>bundle exec rake changelog VERSION=2.3.0</code>
+</p>
+<p>
+If this looks good, back up everything (see above), and get started:
+</p>
+<p>
+    <code>git fetch git://gitorious.org/gitorious/mainline.git</code>
+</p>
+<p>
+    <code>git merge v2.3.0</code>
+</p>
+<p>
+    <code>rake assets:clear</code>
+</p>
+<p>
+Gitorious now has submodules. Initialize and pull them:
+</p>
+<p>
+    <code>git submodule init</code>
+</p>
+<p>
+    <code>git submodule update</code>
+</p>
+<p>
+Upgrade the database:
+</p>
+<p>
+    <code>rake db:migrate</code>
+</p>
+<p>
+Then restart your server (assuming you're using Passenger):
+</p>
+<p>
+    <code>touch tmp/restart.txt</code>
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-5-2-9">Upgrading from 2.3.0 to 2.3.1<br/>
+
+<p>
+To upgrade from version 2.3.0 to 2.3.1, follow these steps:
+</p>
+<p>
+    <code>git fetch git://gitorious.org/gitorious/mainline.git</code>
+</p>
+<p>
+    <code>git merge v2.3.1</code>
+</p>
+<p>
+    <code>bundle install</code>
+</p>
+<p>
+    <code>rake assets:clear</code>
+</p>
+<p>
+    <code>touch tmp/restart.txt</code>
+</p>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-5-3" class="outline-3">
+<h3 id="sec-5-3">Approach 2: Snapshot old instance, restore state in a newly installed instance</h3>
+<div class="outline-text-3" id="text-5-3">
+
+
+<p>
+The nuclear option, and the simplest way to go in some cases. If you
+need to make a major version leap (aka. migrating an ancient Gitorious
+installation) you might want to consider simply snapshotting the old
+one and recovering in a freshly installed new one. This also has the
+benefit of not screwing up your older, working installation if
+something goes wrong.
+</p>
+<p>
+(See the backup/recovery chapter below)
+</p>
+</div>
 </div>
 
 </div>
@@ -584,7 +1019,8 @@ the same locations in your current, older installation:
 
 
 <p>
-The snapshot|restore commands are useful for multiple tasks beyond just standard backups.
+The snapshot|restore commands are useful for multiple tasks beyond
+just standard backups.
 </p>
 
 </div>
@@ -625,7 +1061,7 @@ there. Simple.
 </div>
 
 <div id="outline-container-8-4-3" class="outline-4">
-<h4 id="sec-8-4-3">Upgrading ****</h4>
+<h4 id="sec-8-4-3">Upgrading</h4>
 <div class="outline-text-4" id="text-8-4-3">
 
 
@@ -790,7 +1226,7 @@ Finally, if you are considering paid support/help, note that <a href="http://git
 </div>
 
 <div id="outline-container-12" class="outline-2">
-<h2 id="sec-12"><span class="todo TODO">TODO</span> Contributing to Gitorious</h2>
+<h2 id="sec-12">Contributing to Gitorious</h2>
 <div class="outline-text-2" id="text-12">
 
 
@@ -841,27 +1277,187 @@ Howto: Deploy and test your code in a basic gitorious community edition VM
 </div>
 
 <div id="outline-container-12-2-3" class="outline-4">
-<h4 id="sec-12-2-3">Coding style</h4>
+<h4 id="sec-12-2-3">Coding styleguide</h4>
 <div class="outline-text-4" id="text-12-2-3">
 
 
+<p>
+As Gitorious is a codebase of decent size (by Ruby standards at
+least), we try to adhere to a few guidelines to keep the codebase
+clean.
+</p>
+<p>
+The number one takeaway is that there's some level of flexibility in
+the "rules" outlined below, but the most important thing is that your
+code <span style="text-decoration:underline;">should look good</span> and be easily <span style="text-decoration:underline;">readable</span> and <span style="text-decoration:underline;">understandable</span>
+for everyone else. The Gitorious codebase has its dark corners,
+possibly filled with dragons, but we try to improve things as we see
+them. "Leave the source in a better state than you found it" is solid
+advice.
+</p>
+<p>
+Pay attention to what you commit; always review pending changes with
+`git diff &ndash;staged` and look for things that violates the outlines
+below (git is being helpful and highlights some things, such as
+trailing whitespace).
+</p>
+<p>
+In general, try to follow the style of the existing code, and pay
+attention to how the code you're writing <span style="text-decoration:underline;">actually looks</span>, not just
+how it works.
+</p>
 <ul>
-<li>Two spaces, no tabs, for indention
+<li id="sec-12-2-3-1">General Guidelines<br/>
+
+<ul>
+<li>Lines should stay below 80 chars or so.
 </li>
-<li>Don't use and and or for boolean tests, instead always use &amp;&amp; and ||
+<li>No tabs.
 </li>
-<li>MyClass.my<sub>method</sub>(my<sub>arg</sub>) &ndash; not my<sub>method</sub>( my<sub>arg</sub> ) or my<sub>method</sub> my<sub>arg</sub>
+<li>Don't get too clever.
 </li>
-<li>Unless precedence is an issue; do .. end for multi-line blocks, braces for single line blocks
-</li>
-<li>Follow the conventions you see used in the source already
+<li>No trailing whitespace
 </li>
 </ul>
 
 
+</li>
+</ul>
+<ul>
+<li id="sec-12-2-3-2">Ruby<br/>
+
 <p>
-(copied mostly verbatim from dev.rubyonrails.org)
+Generally the points in Christian Neukirchens
+<a href="#RUBY-STYLE">http://github.com/chneukirchen/styleguide/raw/master/RUBY-STYLE</a> apply.
 </p>
+</li>
+</ul>
+<ul>
+<li id="sec-12-2-3-3">Javascript<br/>
+
+<ul>
+<li>4 spaces, no tabs
+</li>
+<li>80 chars or less line length
+</li>
+<li>Local variables must use the `var` keyword
+</li>
+<li>Use (one) blank line to group statements together where suited
+</li>
+<li>Always use a single space after a keyword, and before a curly brace.
+</li>
+<li>Curly braces goes on the same line
+</li>
+</ul>
+
+
+
+
+
+<pre class="src src-javascript"><span style="color: #586e75;">// </span><span style="color: #586e75;">Wrong</span>
+<span style="color: #859900; font-weight: bold;">function</span> <span style="color: #268bd2;">foo</span> (<span style="color: #268bd2;">arg</span>){
+<span style="color: #586e75;">// </span><span style="color: #586e75;">Wrong</span>
+<span style="color: #859900; font-weight: bold;">function</span> <span style="color: #268bd2;">foo</span>(<span style="color: #268bd2;">arg</span>)
+{
+<span style="color: #586e75;">// </span><span style="color: #586e75;">Correct</span>
+<span style="color: #859900; font-weight: bold;">function</span> <span style="color: #268bd2;">foo</span>(<span style="color: #268bd2;">arg</span>) {
+</pre>
+
+
+
+<p>
+The same applies for conditionals:
+</p>
+
+
+
+<pre class="src src-javascript"><span style="color: #586e75;">// </span><span style="color: #586e75;">Wrong</span>
+<span style="color: #859900; font-weight: bold;">if</span> (arg){
+<span style="color: #586e75;">// </span><span style="color: #586e75;">Wrong</span>
+<span style="color: #859900; font-weight: bold;">if</span>(arg)
+{
+<span style="color: #586e75;">// </span><span style="color: #586e75;">Correct</span>
+<span style="color: #859900; font-weight: bold;">if</span> foo(arg) {
+    ...
+} <span style="color: #859900; font-weight: bold;">else</span> {
+    ...
+}
+</pre>
+
+
+<p>
+One possible exception to the above is if the conditionals argument is
+wrapped on multiple lines, the brace can be placed on a new line to
+ease readability of the conditional body:
+</p>
+
+
+
+<pre class="src src-javascript"><span style="color: #859900; font-weight: bold;">if</span> ((foo &amp;&amp; barIsJustAWordUsedforDemonstrations) ||
+    kittensAreFluffy &amp;&amp; doesNotSayWoof)
+{
+    ...
+}
+</pre>
+
+
+<p>
+However, long boolean expressions should be avoided in the first place.
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-12-2-3-4">CSS<br/>
+
+<ul>
+<li>four space indent
+</li>
+<li>no tabs
+</li>
+<li>multiple selectors on seperate lines, unless singleworded
+</li>
+</ul>
+
+
+
+
+
+<pre class="src src-css"><span style="color: #268bd2;"> </span><span style="color: #586e75;">/* </span><span style="color: #586e75;">wrong </span><span style="color: #586e75;">*/</span>
+<span style="color: #268bd2;">\#foo #bar div.foo, #baz p#quux span.foo </span>{
+    ...
+}
+<span style="color: #586e75;">/* </span><span style="color: #586e75;">Correct </span><span style="color: #586e75;">*/</span>
+<span style="color: #268bd2;">\#foo #bar div.foo,</span>
+<span style="color: #268bd2;">\#baz p#quux span.foo </span>{
+    ...
+}
+</pre>
+
+
+
+<ul>
+<li>Opening brace on the same line as the selector
+</li>
+</ul>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-12-2-3-5">HTML<br/>
+
+<ul>
+<li>2 spaces indendation
+</li>
+<li>No tabs
+</li>
+<li>Prefer to indent deep nesting on a newline+indent, so the structure is easier to follow
+</li>
+</ul>
+
+
+</li>
+</ul>
 </div>
 
 </div>

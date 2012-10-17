@@ -47,19 +47,282 @@ File structure, how we handle incoming ssh/git operations, the gitorious script
 ** Creating your first project and repo
 ** Using Gitorious as a git remote
 ** Collaborating with others: merge requests
-* TODO Upgrades
-** Approach 1: Upgrade current software
+* Upgrades
+** Versioning
 
-git pull origin master
-git checkout NEXT_TAG
-git submodule init
-db:migrate
-rake assets:clear
-touch tmp/restart.txt
+As of July 7th 2011, Gitorious adopted a standard versioning scheme,
+and the initial version was 2.0.0. This version was chosen
+arbitrarily, but we chose 2 over 1 to reflect the fact that Gitorious
+has been through a few major changes since its inception, and we've
+had been around for almost 4 years at that point.
 
-** Approach 2: Snapshot old instance, reinstall, restore old state
+Below you can read about the types of changes and what they demand
+from someone upgrading Gitorious. The changes are listed in order of
+most to least frequent. Releases are available as tags of the form
+“vx.y.z” in the Gitorious mainline repository.
 
-See backup/recovery chapter
+*** Risks of upgrading
+
+We will do our best to keep releases stable. Every release will be run
+in production on gitorious.org prior to being tagged.
+
+*** Patch versions
+
+Patch versions indicate changes with minor impact for installs. In
+general, the rules for patch versions are:
+
+- Should not require database migrations
+- Should not require configuration changes or additions
+- Should not require changes in CSS (e.g. by changing existing markup)
+
+In general: If you have a local install, you should be able to safely
+upgrade patch releases without changing anything, even if you have
+local CSS adjustments.
+
+Because of these restrictions, patch upgrades should be considered
+fairly trivial and of minimal risk. Refer to Upgrading for information
+on checking your current version and upgrading.
+
+*** Minor versions
+
+Minor versions are bigger changes or changes that require action on
+your part other than simply pulling from Git and restarting your
+app. These changes may include:
+
+- Database migrations
+- Required configuration changes and/or additions
+- Substantial changes/additions to the view
+- API changes in models and key lib classes
+
+Each minor version will receive its own entry in the documentation
+chapter you're currently reading.
+
+*** Major versions
+
+Major versions will presumably occur infrequently, and there is no
+specific rules to trigger an upgrade. Our rule of thumb right now is
+that if a new version of Gitorious requires an entirely new
+installation guide of its own, it’s probably a major release. However,
+we may also up the major version number due to the addition of
+substantial new features, redesigns and whatnot.
+
+*** How often/when will Gitorious update its version?
+
+Releases will be made on an irregular schedule, and will coincide with
+gitorious.org deployments, but not in a 1:1 ratio. Occasionally we
+deploy Gitorious a number of times throughout a single week, but do
+not expect more than one version per week. Follow this page, or better
+– the mailing list for updates.
+
+** Approach 1: Manual upgrade
+
+If your version of Gitorious is really old, please start with this
+guide: [[https://gitorious.org/gitorious/pages/LegacyUpgrade][LegacyUpgrade]] ("really old" = older than February 3rd
+2009/92bb70a1).
+
+If your version Gitorious is only a little old, refer to [[https://gitorious.org/gitorious/pages/BundlerSetup][BundlerSetup]]
+("a little old" = older than January 24th 2011/c44237f).
+
+**** The changelog tool
+
+As of Gitorious 2.0.0, Gitorious ships with a simple changelog
+tool. The tool consists of a single rake task that can tell you what
+version you are currently on and what versions are available to
+you. To use it, invoke the following command from the root of your
+installation:
+
+=bundle exec rake changelog=
+
+The tool will give you a list of available version along with an arrow
+indicating your current version. If the arrow points to a green
+number, you're on top of things. If it points to a red number, it
+means that upgrades are available, and you are encouraged to stay up
+to date.
+
+To display a changelog for changes between your current version and
+another version, run the tool with the `VERSION` environment variable
+set:
+
+=bundle exec rake changelog VERSION=2.0.1=
+
+**** Before upgrading
+
+No matter how simple an upgrade may look, we strongly encourage you to
+always back up your database and repository data prior to upgrades. If
+nothing else, an upgrade is a good time to get some snapshots if you
+don't already have scheduled backups of your system. It's also a good
+idea to keep a copy of Gitorious configuration files outside the
+actual install.
+
+**** Upgrading patch versions
+
+Patch upgrades should be trivial in nature. The steps are simple:
+
+    =cd /path/to/gitorious=
+    =git fetch git://gitorious.org/gitorious/mainline.git=
+    =git merge v2.x.y=
+    =rake assets:clear=
+
+Note that `rake assets:clear` was not available prior to 2.1.0. 2.0.x
+can be directly upgraded to 2.1.0, see below.
+
+As of 2.1.0 you also need these steps for any upgrade:
+
+    =git submodule init=
+    =git submodule update=
+    =rake db:migrate=
+
+Finally, restart all services. This includes the webserver, the poller
+and the git daemon. x/y depends on the actual version.
+
+**** Upgrading customized installs
+
+If your Gitorious setup has changes, you may experience conflicts when
+pulling in changes. It is recommended to push your patched version of
+Gitorious somewhere, for example to itself, so you can easily clone
+Gitorious to a local machine, or somewhere else on the server to make
+sure that the patch will apply cleanly before attempting the upgrade.
+
+**** Sample upgrade
+
+Assuming you are on v2.0.0 or newer:
+
+#+begin_src shell
+bundle exec rake changelog
+Available versions
+v2.0.1              Next increment
+-> v2.0.0           First versioned version of Gitorious
+#+end_src
+
+Obviously, there's a new version in town, so let's see what it offers:
+
+#+begin_src shell
+bundle exec rake changelog VERSION=2.0.1
+Changes between v2.0.0 and v2.0.1:
+A longer description appears here
+#+end_src
+
+This looks good, so let's upgrade:
+
+=git fetch git://gitorious.org/gitorious/mainline.git=
+
+=git merge v2.0.0=
+
+=rm public/stylesheets/all.css public/javascripts/all.js public/javascripts/capillary.js public/**/*/gts-*.*=
+
+=touch tmp/restart.txt=
+
+**** Upgrading from 2.0.x to 2.1
+
+You can upgrade directly from any 2.0.x version directly to 2.1.0. Start by reviewing changes:
+
+    =bundle exec rake changelog VERSION=2.1.0=
+
+If this looks good, back up everything (see above), and get started:
+
+    =git fetch git://gitorious.org/gitorious/mainline.git=
+
+    =git merge v2.1.0=
+
+    =rake assets:clear=
+
+Gitorious now has submodules. Initialize and pull them:
+
+    =git submodule init=
+
+    =git submodule update=
+
+Upgrade the database:
+
+    =rake db:migrate=
+
+Then restart your server (assuming you're using Passenger):
+
+    =touch tmp/restart.txt=
+
+**** Upgrading from 2.1.x to 2.2
+
+You can upgrade directly from any 2.1.x version directly to 2.2.0. Start by reviewing changes:
+
+    =bundle exec rake changelog VERSION=2.2.0=
+
+If this looks good, back up everything (see above), and get started:
+
+    =git fetch git://gitorious.org/gitorious/mainline.git=
+
+    =git merge v2.2.0=
+
+    =rake assets:clear=
+
+    =git submodule --init update=
+
+Upgrade the database:
+
+    =rake db:migrate=
+
+Then restart your server (assuming you're using Passenger):
+
+    =touch tmp/restart.txt=
+
+If you want to use the new [[private repositories
+ feature][https://gitorious.org/gitorious/pages/PrivateRepositories]], set the
+=enable_private_repositories= setting to `true` in
+config/gitorious.yml. See the sample configuration in
+config/gitorious.sample.yml for more information.
+
+**** Upgrading from 2.2.x to 2.3
+
+You can upgrade directly from any 2.2.x version directly to 2.3.0. Start by reviewing changes:
+
+    =bundle exec rake changelog VERSION=2.3.0=
+
+If this looks good, back up everything (see above), and get started:
+
+    =git fetch git://gitorious.org/gitorious/mainline.git=
+
+    =git merge v2.3.0=
+
+    =rake assets:clear=
+
+Gitorious now has submodules. Initialize and pull them:
+
+    =git submodule init=
+
+    =git submodule update=
+
+Upgrade the database:
+
+    =rake db:migrate=
+
+Then restart your server (assuming you're using Passenger):
+
+    =touch tmp/restart.txt=
+
+**** Upgrading from 2.3.0 to 2.3.1
+
+To upgrade from version 2.3.0 to 2.3.1, follow these steps:
+
+    =git fetch git://gitorious.org/gitorious/mainline.git=
+
+    =git merge v2.3.1=
+
+    =bundle install=
+
+    =rake assets:clear=
+
+    =touch tmp/restart.txt=
+
+** Approach 2: Snapshot old instance, restore state in a newly installed instance
+
+The nuclear option, and the simplest way to go in some cases. If you
+need to make a major version leap (aka. migrating an ancient Gitorious
+installation) you might want to consider simply snapshotting the old
+one and recovering in a freshly installed new one. This also has the
+benefit of not screwing up your older, working installation if
+something goes wrong.
+
+(See the backup/recovery chapter below)
+
 * TODO Authentication & authorization
 ** LDAP integration
 ** Private projects/repositories
@@ -126,7 +389,8 @@ the same locations in your current, older installation:
 
 ** Scenarios
 
-The snapshot|restore commands are useful for multiple tasks beyond just standard backups.
+The snapshot|restore commands are useful for multiple tasks beyond
+just standard backups.
 
 *** Backup and disaster recovery
 
@@ -146,7 +410,7 @@ Gitorious state from one server to another. Snapshot the old one, copy
 the tarball file over to the other installation and restore
 there. Simple.
 
-*** Upgrading ****
+*** Upgrading
 
 Different scenario, same procedure: if you need to upgrade from an
 older version of Gitorious and don't want to bother with carefully
@@ -209,7 +473,7 @@ Finally, if you are considering paid support/help, note that [[http://gitorious.
 AS]] offers commercial support.
 
 * TODO Frequently Asked Questions
-* TODO Contributing to Gitorious
+* Contributing to Gitorious
 ** Bug reports
 
 Found a bug or annoyance? Please let the maintainers know via the official
@@ -224,15 +488,117 @@ Howto: Set up enough dependencies and code locally to run the Gitorious test sui
 
 Howto: Deploy and test your code in a basic gitorious community edition VM
 
-*** Coding style
+*** Coding styleguide
 
-- Two spaces, no tabs, for indention
-- Don't use and and or for boolean tests, instead always use && and ||
-- MyClass.my_method(my_arg) -- not my_method( my_arg ) or my_method my_arg
-- Unless precedence is an issue; do .. end for multi-line blocks, braces for single line blocks
-- Follow the conventions you see used in the source already
+As Gitorious is a codebase of decent size (by Ruby standards at
+least), we try to adhere to a few guidelines to keep the codebase
+clean.
 
-(copied mostly verbatim from dev.rubyonrails.org)
+The number one takeaway is that there's some level of flexibility in
+the "rules" outlined below, but the most important thing is that your
+code _should look good_ and be easily _readable_ and _understandable_
+for everyone else. The Gitorious codebase has its dark corners,
+possibly filled with dragons, but we try to improve things as we see
+them. "Leave the source in a better state than you found it" is solid
+advice.
+
+Pay attention to what you commit; always review pending changes with
+`git diff --staged` and look for things that violates the outlines
+below (git is being helpful and highlights some things, such as
+trailing whitespace).
+
+In general, try to follow the style of the existing code, and pay
+attention to how the code you're writing _actually looks_, not just
+how it works.
+
+**** General Guidelines
+
+- Lines should stay below 80 chars or so.
+- No tabs.
+- Don't get too clever.
+- No trailing whitespace
+
+**** Ruby
+
+Generally the points in Christian Neukirchens
+[[RUBY-STYLE][http://github.com/chneukirchen/styleguide/raw/master/RUBY-STYLE]] apply.
+
+**** Javascript
+
+- 4 spaces, no tabs
+- 80 chars or less line length
+- Local variables must use the `var` keyword
+- Use (one) blank line to group statements together where suited
+- Always use a single space after a keyword, and before a curly brace.
+- Curly braces goes on the same line
+
+#+begin_src javascript
+    // Wrong
+    function foo (arg){
+    // Wrong
+    function foo(arg)
+    {
+    // Correct
+    function foo(arg) {
+#+end_src
+
+
+The same applies for conditionals:
+
+#+begin_src javascript
+    // Wrong
+    if (arg){
+    // Wrong
+    if(arg)
+    {
+    // Correct
+    if foo(arg) {
+        ...
+    } else {
+        ...
+    }
+#+end_src
+
+One possible exception to the above is if the conditionals argument is
+wrapped on multiple lines, the brace can be placed on a new line to
+ease readability of the conditional body:
+
+#+begin_src javascript
+     if ((foo && barIsJustAWordUsedforDemonstrations) ||
+         kittensAreFluffy && doesNotSayWoof)
+     {
+         ...
+     }
+#+end_src
+
+However, long boolean expressions should be avoided in the first place.
+
+**** CSS
+
+- four space indent
+- no tabs
+- multiple selectors on seperate lines, unless singleworded
+
+#+begin_src css
+     /* wrong */
+    \#foo #bar div.foo, #baz p#quux span.foo {
+        ...
+    }
+    /* Correct */
+    \#foo #bar div.foo,
+    \#baz p#quux span.foo {
+        ...
+    }
+#+end_src
+
+
+- Opening brace on the same line as the selector
+
+**** HTML
+
+- 2 spaces indendation
+- No tabs
+- Prefer to indent deep nesting on a newline+indent, so the structure is easier to follow
 
 *** Branching model
 
