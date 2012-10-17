@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>gitorious<sub>book</sub></title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="title" content="gitorious<sub>book</sub>"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2012-10-17 16:34:38 CEST"/>
+<meta name="author" content="Thomas Kjeldahl Nilsson"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">gitorious<sub>book</sub></h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Introduction</a></li>
+<li><a href="#sec-2">2 How Gitorious works</a>
+<ul>
+<li><a href="#sec-2-1">2.1 Features &amp; benefits</a></li>
+<li><a href="#sec-2-2">2.2 Overview: services, processes, packages</a></li>
+<li><a href="#sec-2-3">2.3 How the web frontend works</a></li>
+<li><a href="#sec-2-4">2.4 How the git backend works</a></li>
+<li><a href="#sec-2-5">2.5 FOSS licensing</a></li>
+<li><a href="#sec-2-6">2.6 Gitorious AS services</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3 Installation</a>
+<ul>
+<li><a href="#sec-3-1">3.1 Overview - common steps</a></li>
+<li><a href="#sec-3-2">3.2 Distro specific instructions</a>
+<ul>
+<li><a href="#sec-3-2-1">3.2.1 CentOS / RHEL</a></li>
+<li><a href="#sec-3-2-2">3.2.2 Debian / Ubuntu</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-4">4 Upgrades</a>
+<ul>
+<li><a href="#sec-4-1">4.1 Approach 1: Upgrade current software</a></li>
+<li><a href="#sec-4-2">4.2 Approach 2: Snapshot old instance, reinstall, restore old state</a></li>
+</ul>
+</li>
+<li><a href="#sec-5">5 Using the web frontend</a></li>
+<li><a href="#sec-6">6 Authentication &amp; authorization</a>
+<ul>
+<li><a href="#sec-6-1">6.1 LDAP integration</a></li>
+<li><a href="#sec-6-2">6.2 Private projects/repositories</a></li>
+</ul>
+</li>
+<li><a href="#sec-7">7 Keeping your site up</a>
+<ul>
+<li><a href="#sec-7-1">7.1 Monit</a></li>
+<li><a href="#sec-7-2">7.2 Diagnostics</a></li>
+</ul>
+</li>
+<li><a href="#sec-8">8 Backup &amp; disaster recovery</a></li>
+<li><a href="#sec-9">9 Scaling</a>
+<ul>
+<li><a href="#sec-9-1">9.1 Caching with Vagrant</a></li>
+<li><a href="#sec-9-2">9.2 Horizontal scaling</a></li>
+<li><a href="#sec-9-3">9.3 Vertical scaling</a></li>
+<li><a href="#sec-9-4">9.4 Repository hashing/sharding</a></li>
+</ul>
+</li>
+<li><a href="#sec-10">10 Troubleshooting</a>
+<ul>
+<li><a href="#sec-10-1">10.1 Current common sticking points</a>
+<ul>
+<li><a href="#sec-10-1-1">10.1.1 Repo creation getting stuck</a></li>
+<li><a href="#sec-10-1-2">10.1.2 &hellip;</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-11">11 Developing</a>
+<ul>
+<li><a href="#sec-11-1">11.1 Setting up your development environment</a></li>
+<li><a href="#sec-11-2">11.2 Submitting patches and merge requests</a></li>
+</ul>
+</li>
+<li><a href="#sec-12">12 Contributing</a>
+<ul>
+<li><a href="#sec-12-1">12.1 Bug reports</a></li>
+<li><a href="#sec-12-2">12.2 Merge Requests</a></li>
+<li><a href="#sec-12-3">12.3 Community funded features</a></li>
+</ul>
+</li>
+<li><a href="#sec-13">13 Need more help?</a>
+<ul>
+<li><a href="#sec-13-1">13.1 Google Group</a></li>
+<li><a href="#sec-13-2">13.2 #gitorious on IRC</a></li>
+<li><a href="#sec-13-3">13.3 Gitorious AS services &amp; products</a></li>
+</ul>
+</li>
+<li><a href="#sec-14">14 Feedback</a></li>
+<li><a href="#sec-15">15 Frequently Asked Questions</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> How Gitorious works</h2>
+<div class="outline-text-2" id="text-2">
+
+
+</div>
+
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Features &amp; benefits</h3>
+<div class="outline-text-3" id="text-2-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Overview: services, processes, packages</h3>
+<div class="outline-text-3" id="text-2-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> How the web frontend works</h3>
+<div class="outline-text-3" id="text-2-3">
+
+<p>   Briefly describe Rails/web architecture
+</p></div>
+
+</div>
+
+<div id="outline-container-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> How the git backend works</h3>
+<div class="outline-text-3" id="text-2-4">
+
+<p>File structure, how we handle incoming ssh/git operations, the gitorious script
+</p></div>
+
+</div>
+
+<div id="outline-container-2-5" class="outline-3">
+<h3 id="sec-2-5"><span class="section-number-3">2.5</span> FOSS licensing</h3>
+<div class="outline-text-3" id="text-2-5">
+
+</div>
+
+</div>
+
+<div id="outline-container-2-6" class="outline-3">
+<h3 id="sec-2-6"><span class="section-number-3">2.6</span> Gitorious AS services</h3>
+<div class="outline-text-3" id="text-2-6">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Installation</h2>
+<div class="outline-text-2" id="text-3">
+
+
+</div>
+
+<div id="outline-container-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> Overview - common steps</h3>
+<div class="outline-text-3" id="text-3-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> Distro specific instructions</h3>
+<div class="outline-text-3" id="text-3-2">
+
+
+</div>
+
+<div id="outline-container-3-2-1" class="outline-4">
+<h4 id="sec-3-2-1"><span class="section-number-4">3.2.1</span> CentOS / RHEL</h4>
+<div class="outline-text-4" id="text-3-2-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-3-2-2" class="outline-4">
+<h4 id="sec-3-2-2"><span class="section-number-4">3.2.2</span> Debian / Ubuntu</h4>
+<div class="outline-text-4" id="text-3-2-2">
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Upgrades</h2>
+<div class="outline-text-2" id="text-4">
+
+
+
+</div>
+
+<div id="outline-container-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> Approach 1: Upgrade current software</h3>
+<div class="outline-text-3" id="text-4-1">
+
+
+<p>
+git pull origin master | git pull origin TAG/VERSION
+git submodule init
+db:migrate
+rake assets:clear
+touch tmp/restart.txt
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> Approach 2: Snapshot old instance, reinstall, restore old state</h3>
+<div class="outline-text-3" id="text-4-2">
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Using the web frontend</h2>
+<div class="outline-text-2" id="text-5">
+
+<p>(Tour of the UI, how to do stuff. Add after UI overhaul)
+</p></div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Authentication &amp; authorization</h2>
+<div class="outline-text-2" id="text-6">
+
+
+</div>
+
+<div id="outline-container-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> LDAP integration</h3>
+<div class="outline-text-3" id="text-6-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-6-2" class="outline-3">
+<h3 id="sec-6-2"><span class="section-number-3">6.2</span> Private projects/repositories</h3>
+<div class="outline-text-3" id="text-6-2">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Keeping your site up</h2>
+<div class="outline-text-2" id="text-7">
+
+
+</div>
+
+<div id="outline-container-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> Monit</h3>
+<div class="outline-text-3" id="text-7-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-7-2" class="outline-3">
+<h3 id="sec-7-2"><span class="section-number-3">7.2</span> Diagnostics</h3>
+<div class="outline-text-3" id="text-7-2">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> Backup &amp; disaster recovery</h2>
+<div class="outline-text-2" id="text-8">
+
+</div>
+
+</div>
+
+<div id="outline-container-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> Scaling</h2>
+<div class="outline-text-2" id="text-9">
+
+
+</div>
+
+<div id="outline-container-9-1" class="outline-3">
+<h3 id="sec-9-1"><span class="section-number-3">9.1</span> Caching with Vagrant</h3>
+<div class="outline-text-3" id="text-9-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-9-2" class="outline-3">
+<h3 id="sec-9-2"><span class="section-number-3">9.2</span> Horizontal scaling</h3>
+<div class="outline-text-3" id="text-9-2">
+
+<p>   what sort of hardware will you need to keep a single server running
+   under misc typical usage scenarios?
+</p></div>
+
+</div>
+
+<div id="outline-container-9-3" class="outline-3">
+<h3 id="sec-9-3"><span class="section-number-3">9.3</span> Vertical scaling</h3>
+<div class="outline-text-3" id="text-9-3">
+
+<p>   distributing the load over multiple serves
+</p></div>
+
+</div>
+
+<div id="outline-container-9-4" class="outline-3">
+<h3 id="sec-9-4"><span class="section-number-3">9.4</span> Repository hashing/sharding</h3>
+<div class="outline-text-3" id="text-9-4">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-10" class="outline-2">
+<h2 id="sec-10"><span class="section-number-2">10</span> Troubleshooting</h2>
+<div class="outline-text-2" id="text-10">
+
+
+</div>
+
+<div id="outline-container-10-1" class="outline-3">
+<h3 id="sec-10-1"><span class="section-number-3">10.1</span> Current common sticking points</h3>
+<div class="outline-text-3" id="text-10-1">
+
+
+</div>
+
+<div id="outline-container-10-1-1" class="outline-4">
+<h4 id="sec-10-1-1"><span class="section-number-4">10.1.1</span> Repo creation getting stuck</h4>
+<div class="outline-text-4" id="text-10-1-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-10-1-2" class="outline-4">
+<h4 id="sec-10-1-2"><span class="section-number-4">10.1.2</span> &hellip;</h4>
+<div class="outline-text-4" id="text-10-1-2">
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-11" class="outline-2">
+<h2 id="sec-11"><span class="section-number-2">11</span> Developing</h2>
+<div class="outline-text-2" id="text-11">
+
+
+</div>
+
+<div id="outline-container-11-1" class="outline-3">
+<h3 id="sec-11-1"><span class="section-number-3">11.1</span> Setting up your development environment</h3>
+<div class="outline-text-3" id="text-11-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-11-2" class="outline-3">
+<h3 id="sec-11-2"><span class="section-number-3">11.2</span> Submitting patches and merge requests</h3>
+<div class="outline-text-3" id="text-11-2">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-12" class="outline-2">
+<h2 id="sec-12"><span class="section-number-2">12</span> Contributing</h2>
+<div class="outline-text-2" id="text-12">
+
+
+</div>
+
+<div id="outline-container-12-1" class="outline-3">
+<h3 id="sec-12-1"><span class="section-number-3">12.1</span> Bug reports</h3>
+<div class="outline-text-3" id="text-12-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-12-2" class="outline-3">
+<h3 id="sec-12-2"><span class="section-number-3">12.2</span> Merge Requests</h3>
+<div class="outline-text-3" id="text-12-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-12-3" class="outline-3">
+<h3 id="sec-12-3"><span class="section-number-3">12.3</span> Community funded features</h3>
+<div class="outline-text-3" id="text-12-3">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-13" class="outline-2">
+<h2 id="sec-13"><span class="section-number-2">13</span> Need more help?</h2>
+<div class="outline-text-2" id="text-13">
+
+
+</div>
+
+<div id="outline-container-13-1" class="outline-3">
+<h3 id="sec-13-1"><span class="section-number-3">13.1</span> Google Group</h3>
+<div class="outline-text-3" id="text-13-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-13-2" class="outline-3">
+<h3 id="sec-13-2"><span class="section-number-3">13.2</span> #gitorious on IRC</h3>
+<div class="outline-text-3" id="text-13-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-13-3" class="outline-3">
+<h3 id="sec-13-3"><span class="section-number-3">13.3</span> Gitorious AS services &amp; products</h3>
+<div class="outline-text-3" id="text-13-3">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-14" class="outline-2">
+<h2 id="sec-14"><span class="section-number-2">14</span> Feedback</h2>
+<div class="outline-text-2" id="text-14">
+
+</div>
+
+</div>
+
+<div id="outline-container-15" class="outline-2">
+<h2 id="sec-15"><span class="section-number-2">15</span> Frequently Asked Questions</h2>
+<div class="outline-text-2" id="text-15">
+
+</div>
+</div>
+</div>
+
+</body>
+</html>
