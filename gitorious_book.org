@@ -22,27 +22,36 @@
  group</a> for documentation and troubleshooting.</p>
 #+END_HTML
 
-
-* Introduction
-* How Gitorious works
+* TODO Introduction
+** History
 ** Features & benefits
+** FOSS licensing
+** Current maintainers
+** Funding
+* TODO How Gitorious works
 ** Overview: services, processes, packages
 ** How the web frontend works
    Briefly describe Rails/web architecture
 ** How the git backend works
 File structure, how we handle incoming ssh/git operations, the gitorious script
-** FOSS licensing
-** Gitorious AS services
-* Installation
-** Overview - common steps
-** Distro specific instructions
+* TODO Installation
+** Automated installation
+** Manual installation
+*** Overview - common steps
+
 *** CentOS / RHEL
 *** Debian / Ubuntu
-* Upgrades
-
+* TODO Using the web frontend
+** Registering your user
+** Adding your ssh key
+** Creating your first project and repo
+** Using Gitorious as a git remote
+** Collaborating with others: merge requests
+* TODO Upgrades
 ** Approach 1: Upgrade current software
 
-git pull origin master | git pull origin TAG/VERSION
+git pull origin master
+git checkout NEXT_TAG
 git submodule init
 db:migrate
 rake assets:clear
@@ -50,16 +59,109 @@ touch tmp/restart.txt
 
 ** Approach 2: Snapshot old instance, reinstall, restore old state
 
-* Using the web frontend
-(Tour of the UI, how to do stuff. Add after UI overhaul)
-* Authentication & authorization
+See backup/recovery chapter
+* TODO Authentication & authorization
 ** LDAP integration
 ** Private projects/repositories
-* Keeping your site up
+* TODO Keeping it running
 ** Monit
-** Diagnostics
-* Backup & disaster recovery
-* Scaling
+** Diagnostic checks
+* Backup, recovery, migration, cloning
+
+Gitorious has support for snapshotting and restoring its state, which
+makes it possible to easily perform backups, disaster recovery,
+cloning and migration of Gitorious sites.
+
+** Using the snapshot/restore commands
+
+If you're on a recent version of Gitorious (>v2.3.0) you'll find two
+commands under the scripts directory: scripts/snapshot and
+scripts/restore. Each of them takes a single parameter: the path of
+the tar file you want your Gitorious installation backed up to, or
+restored from. Note that you'll need to launch the commands from the
+root directory of your Gitorious install (the directory where you find
+your Rakefile, Gemfile, config directory etc).
+
+** How to perform snapshots in older Gitorious versions
+
+It's fairly straightforward to add these new snapshot|restore commands
+to an older Gitorious instance a well: you only need to clone the
+latest version of the Gitorious code, and copy the following files to
+the same locations in your current, older installation:
+
+=script/restore=
+=script/snapshot=
+=lib/tasks/backup.rake=
+
+** Assumptions and caveats
+
+- For disaster recovery, you'll first need to get a functional
+  installation of Gitorious up and running, after which you can run
+  the restore command to bring in your data again. Note that the
+  snapshot tarball also includes the configuration files from your old
+  Gitorious installation. They are not automatically copied into your
+  new installation, but can be used to recreate your old config in
+  your new Gitorious installation (useful if your previous Gitorious
+  installation had custom LDAP integration, custom hooks etc).
+
+- Snapshots will not preserve any custom code or theming you may have
+  added to your Gitorious installation: any such local modifications
+  will need to be backed up and restored separately
+
+- Some operations in Gitorious are asynchronous, meaning they are
+  performed by publishing/consuming messages on a queue. The
+  snapshot/restore commands don't currently capture or restore the
+  state of the queue, so any current work on the queue will be lost.
+
+- The snapshot/recovery commands assume that you have the time and
+  disk-space to slurp down all your hosted repos into a local
+  tarball. Sites with huge amounts of git repository data may
+  therefore need more custom backup schemes.
+
+- The restore command assumes that no breaking changes have happened
+  between the version you snapshot from, and the version you restore
+  your data into. In the future, major Gitorious version jumps may
+  necessitate a more manual restore procedure due to changes in
+  configurations, db schema, folder structure etc.
+
+** Scenarios
+
+The snapshot|restore commands are useful for multiple tasks beyond just standard backups.
+
+*** Backup and disaster recovery
+
+Run periodic backups, for instance via cron. Execute the snapshot
+command, for example like this script/snapshot
+/tmp/todays-snapshot.tar. Transfer the newly created tarball to
+another server, offsite location or something like Amazon S3.
+
+If disaster strikes on your Gitorious installation, install a new
+instance of Gitorious, then run script/restore todays-snapshot.tar to
+restore your old state in the new installation.
+
+*** Migrations and clones
+
+The same procedure is useful if you just need to move or clone your
+Gitorious state from one server to another. Snapshot the old one, copy
+the tarball file over to the other installation and restore
+there. Simple.
+
+*** Upgrading ****
+
+Different scenario, same procedure: if you need to upgrade from an
+older version of Gitorious and don't want to bother with carefully
+upgrading your Gitorious instance across multiple versions, you can
+simply snapshot the state of your old Gitorious site, install a fresh
+new Gitorious instance and just restore your state there.
+
+*** Snapshots and rollbacks for development and testing
+
+If you're a developer extending, customizing or developing new
+features for Gitorious, you can use the snapshot|restore commands to
+simply setting up and restoring multiple standard database/repository
+states in order to simplify testing.
+
+* TODO Scaling
 ** Caching with Vagrant
 ** Horizontal scaling
    what sort of hardware will you need to keep a single server running
@@ -67,20 +169,98 @@ touch tmp/restart.txt
 ** Vertical scaling
    distributing the load over multiple serves
 ** Repository hashing/sharding
+
 * Troubleshooting
-** Current common sticking points
-*** Repo creation getting stuck
-*** ...
-* Developing
-** Setting up your development environment
-** Submitting patches and merge requests
-* Contributing
+
+You're running your own Gitorious site. Now something seems to be
+broken. Where do you start?
+
+** Diagnostics CLI tool
+
+Gitorious includes a self-diagnostic tool (available in v2.3.0 and
+onwards).
+
+Execute scripts/diagnose (as superuser/root), and Gitorious will print
+out a summary of its internals. Obvious problems in your setup will
+show up here, which should give you a clue as to what could be amiss
+in your installation.
+
+** Diagnostics dashboard url
+
+You can also check the health of the site via the web frontend. If you
+are a site admin, browse to /admin/diagnostics at your Gitorious
+site. You'll be greeted with a diagnostics summary very similar to the
+script/diagnose command.
+
+** Check the FAQ
+
+(See FAQ chapter below)
+
+** Ask the community
+
+If you're still stuck, consider asking the Gitorious community for
+suggestions.
+
+The core contributors and quite a few community members subscribe to
+the [[http://groups.google.com/group/gitorious?hl=en][Gitorious Google Group]]. There's also an IRC channel
+available: #gitorious at freenode.net
+
+Finally, if you are considering paid support/help, note that [[http://gitorious.com][Gitorious
+AS]] offers commercial support.
+
+* TODO Frequently Asked Questions
+* TODO Contributing to Gitorious
 ** Bug reports
-** Merge Requests
-** Community funded features
-* Need more help?
+
+Found a bug or annoyance? Please let the maintainers know via the official
+issuetracker at [[https://issues.gitorious.org/][https://issues.gitorious.org/]].
+
+** Hacking on Gitorious
+*** TODO Setting up your development environment
+
+Howto: Set up enough dependencies and code locally to run the Gitorious test suite.
+
+*** TODO Deploying and testing your code in a "cleanroom" VM
+
+Howto: Deploy and test your code in a basic gitorious community edition VM
+
+*** Coding style
+
+- Two spaces, no tabs, for indention
+- Don't use and and or for boolean tests, instead always use && and ||
+- MyClass.my_method(my_arg) -- not my_method( my_arg ) or my_method my_arg
+- Unless precedence is an issue; do .. end for multi-line blocks, braces for single line blocks
+- Follow the conventions you see used in the source already
+
+(copied mostly verbatim from dev.rubyonrails.org)
+
+*** Branching model
+
+Gitorious uses
+[the git-flow branching model](http://nvie.com/posts/a-successful-git-branching-model/)
+for branching. This means that the master branch is stable, and is
+only merged to once a feature has been completed.
+
+New features are created in feature branches (named `feature/$name`)
+and then merged into the `next` branch once finished. Such features
+arrive in `master` as new releases.
+
+When contributing new features into Gitorious as merge requests, these
+should be started the `next` branch, and marked as such when proposed.
+
+The exception to this is hotfixes, which may be started from and
+proposed merged into `master`. Please note that hotfixes should not
+implement new functionality.
+
+** Don't have time yourself? Fund new features!
+
+If your company has urgent need of new features/modifications in
+Gitorious, please get in touch with the core contributors via
+team@gitorious.org for funding development of your proposed features.
+
+* TODO Need more help?
 ** Google Group
 ** #gitorious on IRC
 ** Gitorious AS services & products
-* Feedback
-* Frequently Asked Questions
+
+* TODO Feedback

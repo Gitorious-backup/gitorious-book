@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="title" content="The Gitorious Book"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2012-10-17 18:45:36 CEST"/>
+<meta name="generated" content="2012-10-17 21:14:40 CEST"/>
 <meta name="author" content="Thomas Kjeldahl Nilsson"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -103,52 +103,78 @@
  group</a> for documentation and troubleshooting.</p>
 
 
-
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#sec-1">Introduction</a></li>
+<li><a href="#sec-1">Introduction</a>
+<ul>
+<li><a href="#sec-1-1">History</a></li>
+<li><a href="#sec-1-2">Features &amp; benefits</a></li>
+<li><a href="#sec-1-3">FOSS licensing</a></li>
+<li><a href="#sec-1-4">Current maintainers</a></li>
+<li><a href="#sec-1-5">Funding</a></li>
+</ul>
+</li>
 <li><a href="#sec-2">How Gitorious works</a>
 <ul>
-<li><a href="#sec-2-1">Features &amp; benefits</a></li>
-<li><a href="#sec-2-2">Overview: services, processes, packages</a></li>
-<li><a href="#sec-2-3">How the web frontend works</a></li>
-<li><a href="#sec-2-4">How the git backend works</a></li>
-<li><a href="#sec-2-5">FOSS licensing</a></li>
-<li><a href="#sec-2-6">Gitorious AS services</a></li>
+<li><a href="#sec-2-1">Overview: services, processes, packages</a></li>
+<li><a href="#sec-2-2">How the web frontend works</a></li>
+<li><a href="#sec-2-3">How the git backend works</a></li>
 </ul>
 </li>
 <li><a href="#sec-3">Installation</a>
 <ul>
-<li><a href="#sec-3-1">Overview - common steps</a></li>
-<li><a href="#sec-3-2">Distro specific instructions</a>
+<li><a href="#sec-3-1">Automated installation</a></li>
+<li><a href="#sec-3-2">Manual installation</a>
 <ul>
-<li><a href="#sec-3-2-1">CentOS / RHEL</a></li>
-<li><a href="#sec-3-2-2">Debian / Ubuntu</a></li>
+<li><a href="#sec-3-2-1">Overview - common steps</a></li>
+<li><a href="#sec-3-2-2">CentOS / RHEL</a></li>
+<li><a href="#sec-3-2-3">Debian / Ubuntu</a></li>
 </ul></li>
 </ul>
 </li>
-<li><a href="#sec-4">Upgrades</a>
+<li><a href="#sec-4">Using the web frontend</a>
 <ul>
-<li><a href="#sec-4-1">Approach 1: Upgrade current software</a></li>
-<li><a href="#sec-4-2">Approach 2: Snapshot old instance, reinstall, restore old state</a></li>
+<li><a href="#sec-4-1">Registering your user</a></li>
+<li><a href="#sec-4-2">Adding your ssh key</a></li>
+<li><a href="#sec-4-3">Creating your first project and repo</a></li>
+<li><a href="#sec-4-4">Using Gitorious as a git remote</a></li>
+<li><a href="#sec-4-5">Collaborating with others: merge requests</a></li>
 </ul>
 </li>
-<li><a href="#sec-5">Using the web frontend</a></li>
+<li><a href="#sec-5">Upgrades</a>
+<ul>
+<li><a href="#sec-5-1">Approach 1: Upgrade current software</a></li>
+<li><a href="#sec-5-2">Approach 2: Snapshot old instance, reinstall, restore old state</a></li>
+</ul>
+</li>
 <li><a href="#sec-6">Authentication &amp; authorization</a>
 <ul>
 <li><a href="#sec-6-1">LDAP integration</a></li>
 <li><a href="#sec-6-2">Private projects/repositories</a></li>
 </ul>
 </li>
-<li><a href="#sec-7">Keeping your site up</a>
+<li><a href="#sec-7">Keeping it running</a>
 <ul>
 <li><a href="#sec-7-1">Monit</a></li>
-<li><a href="#sec-7-2">Diagnostics</a></li>
+<li><a href="#sec-7-2">Diagnostic checks</a></li>
 </ul>
 </li>
-<li><a href="#sec-8">Backup &amp; disaster recovery</a></li>
+<li><a href="#sec-8">Backup, recovery, migration, cloning</a>
+<ul>
+<li><a href="#sec-8-1">Using the snapshot/restore commands</a></li>
+<li><a href="#sec-8-2">How to perform snapshots in older Gitorious versions</a></li>
+<li><a href="#sec-8-3">Assumptions and caveats</a></li>
+<li><a href="#sec-8-4">Scenarios</a>
+<ul>
+<li><a href="#sec-8-4-1">Backup and disaster recovery</a></li>
+<li><a href="#sec-8-4-2">Migrations and clones</a></li>
+<li><a href="#sec-8-4-3">Upgrading ****</a></li>
+<li><a href="#sec-8-4-4">Snapshots and rollbacks for development and testing</a></li>
+</ul></li>
+</ul>
+</li>
 <li><a href="#sec-9">Scaling</a>
 <ul>
 <li><a href="#sec-9-1">Caching with Vagrant</a></li>
@@ -159,24 +185,25 @@
 </li>
 <li><a href="#sec-10">Troubleshooting</a>
 <ul>
-<li><a href="#sec-10-1">Current common sticking points</a>
-<ul>
-<li><a href="#sec-10-1-1">Repo creation getting stuck</a></li>
-<li><a href="#sec-10-1-2">&hellip;</a></li>
-</ul></li>
+<li><a href="#sec-10-1">Diagnostics CLI tool</a></li>
+<li><a href="#sec-10-2">Diagnostics dashboard url</a></li>
+<li><a href="#sec-10-3">Check the FAQ</a></li>
+<li><a href="#sec-10-4">Ask the community</a></li>
 </ul>
 </li>
-<li><a href="#sec-11">Developing</a>
-<ul>
-<li><a href="#sec-11-1">Setting up your development environment</a></li>
-<li><a href="#sec-11-2">Submitting patches and merge requests</a></li>
-</ul>
-</li>
-<li><a href="#sec-12">Contributing</a>
+<li><a href="#sec-11">Frequently Asked Questions</a></li>
+<li><a href="#sec-12">Contributing to Gitorious</a>
 <ul>
 <li><a href="#sec-12-1">Bug reports</a></li>
-<li><a href="#sec-12-2">Merge Requests</a></li>
-<li><a href="#sec-12-3">Community funded features</a></li>
+<li><a href="#sec-12-2">Hacking on Gitorious</a>
+<ul>
+<li><a href="#sec-12-2-1">Setting up your development environment</a></li>
+<li><a href="#sec-12-2-2">Deploying and testing your code in a "cleanroom" VM</a></li>
+<li><a href="#sec-12-2-3">Coding style</a></li>
+<li><a href="#sec-12-2-4">Branching model</a></li>
+</ul>
+</li>
+<li><a href="#sec-12-3">Don't have time yourself? Fund new features!</a></li>
 </ul>
 </li>
 <li><a href="#sec-13">Need more help?</a>
@@ -187,28 +214,67 @@
 </ul>
 </li>
 <li><a href="#sec-14">Feedback</a></li>
-<li><a href="#sec-15">Frequently Asked Questions</a></li>
 </ul>
 </div>
 </div>
 
 <div id="outline-container-1" class="outline-2">
-<h2 id="sec-1">Introduction</h2>
+<h2 id="sec-1"><span class="todo TODO">TODO</span> Introduction</h2>
 <div class="outline-text-2" id="text-1">
 
+
+</div>
+
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1">History</h3>
+<div class="outline-text-3" id="text-1-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2">Features &amp; benefits</h3>
+<div class="outline-text-3" id="text-1-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-1-3" class="outline-3">
+<h3 id="sec-1-3">FOSS licensing</h3>
+<div class="outline-text-3" id="text-1-3">
+
+</div>
+
+</div>
+
+<div id="outline-container-1-4" class="outline-3">
+<h3 id="sec-1-4">Current maintainers</h3>
+<div class="outline-text-3" id="text-1-4">
+
+</div>
+
+</div>
+
+<div id="outline-container-1-5" class="outline-3">
+<h3 id="sec-1-5">Funding</h3>
+<div class="outline-text-3" id="text-1-5">
+
+</div>
 </div>
 
 </div>
 
 <div id="outline-container-2" class="outline-2">
-<h2 id="sec-2">How Gitorious works</h2>
+<h2 id="sec-2"><span class="todo TODO">TODO</span> How Gitorious works</h2>
 <div class="outline-text-2" id="text-2">
 
 
 </div>
 
 <div id="outline-container-2-1" class="outline-3">
-<h3 id="sec-2-1">Features &amp; benefits</h3>
+<h3 id="sec-2-1">Overview: services, processes, packages</h3>
 <div class="outline-text-3" id="text-2-1">
 
 </div>
@@ -216,57 +282,33 @@
 </div>
 
 <div id="outline-container-2-2" class="outline-3">
-<h3 id="sec-2-2">Overview: services, processes, packages</h3>
+<h3 id="sec-2-2">How the web frontend works</h3>
 <div class="outline-text-3" id="text-2-2">
-
-</div>
-
-</div>
-
-<div id="outline-container-2-3" class="outline-3">
-<h3 id="sec-2-3">How the web frontend works</h3>
-<div class="outline-text-3" id="text-2-3">
 
 <p>   Briefly describe Rails/web architecture
 </p></div>
 
 </div>
 
-<div id="outline-container-2-4" class="outline-3">
-<h3 id="sec-2-4">How the git backend works</h3>
-<div class="outline-text-3" id="text-2-4">
+<div id="outline-container-2-3" class="outline-3">
+<h3 id="sec-2-3">How the git backend works</h3>
+<div class="outline-text-3" id="text-2-3">
 
 <p>File structure, how we handle incoming ssh/git operations, the gitorious script
 </p></div>
-
-</div>
-
-<div id="outline-container-2-5" class="outline-3">
-<h3 id="sec-2-5">FOSS licensing</h3>
-<div class="outline-text-3" id="text-2-5">
-
-</div>
-
-</div>
-
-<div id="outline-container-2-6" class="outline-3">
-<h3 id="sec-2-6">Gitorious AS services</h3>
-<div class="outline-text-3" id="text-2-6">
-
-</div>
 </div>
 
 </div>
 
 <div id="outline-container-3" class="outline-2">
-<h2 id="sec-3">Installation</h2>
+<h2 id="sec-3"><span class="todo TODO">TODO</span> Installation</h2>
 <div class="outline-text-2" id="text-3">
 
 
 </div>
 
 <div id="outline-container-3-1" class="outline-3">
-<h3 id="sec-3-1">Overview - common steps</h3>
+<h3 id="sec-3-1">Automated installation</h3>
 <div class="outline-text-3" id="text-3-1">
 
 </div>
@@ -274,23 +316,32 @@
 </div>
 
 <div id="outline-container-3-2" class="outline-3">
-<h3 id="sec-3-2">Distro specific instructions</h3>
+<h3 id="sec-3-2">Manual installation</h3>
 <div class="outline-text-3" id="text-3-2">
 
 
 </div>
 
 <div id="outline-container-3-2-1" class="outline-4">
-<h4 id="sec-3-2-1">CentOS / RHEL</h4>
+<h4 id="sec-3-2-1">Overview - common steps</h4>
 <div class="outline-text-4" id="text-3-2-1">
+
 
 </div>
 
 </div>
 
 <div id="outline-container-3-2-2" class="outline-4">
-<h4 id="sec-3-2-2">Debian / Ubuntu</h4>
+<h4 id="sec-3-2-2">CentOS / RHEL</h4>
 <div class="outline-text-4" id="text-3-2-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-3-2-3" class="outline-4">
+<h4 id="sec-3-2-3">Debian / Ubuntu</h4>
+<div class="outline-text-4" id="text-3-2-3">
 
 </div>
 </div>
@@ -299,20 +350,68 @@
 </div>
 
 <div id="outline-container-4" class="outline-2">
-<h2 id="sec-4">Upgrades</h2>
+<h2 id="sec-4"><span class="todo TODO">TODO</span> Using the web frontend</h2>
 <div class="outline-text-2" id="text-4">
-
 
 
 </div>
 
 <div id="outline-container-4-1" class="outline-3">
-<h3 id="sec-4-1">Approach 1: Upgrade current software</h3>
+<h3 id="sec-4-1">Registering your user</h3>
 <div class="outline-text-3" id="text-4-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-4-2" class="outline-3">
+<h3 id="sec-4-2">Adding your ssh key</h3>
+<div class="outline-text-3" id="text-4-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-4-3" class="outline-3">
+<h3 id="sec-4-3">Creating your first project and repo</h3>
+<div class="outline-text-3" id="text-4-3">
+
+</div>
+
+</div>
+
+<div id="outline-container-4-4" class="outline-3">
+<h3 id="sec-4-4">Using Gitorious as a git remote</h3>
+<div class="outline-text-3" id="text-4-4">
+
+</div>
+
+</div>
+
+<div id="outline-container-4-5" class="outline-3">
+<h3 id="sec-4-5">Collaborating with others: merge requests</h3>
+<div class="outline-text-3" id="text-4-5">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="todo TODO">TODO</span> Upgrades</h2>
+<div class="outline-text-2" id="text-5">
+
+
+</div>
+
+<div id="outline-container-5-1" class="outline-3">
+<h3 id="sec-5-1">Approach 1: Upgrade current software</h3>
+<div class="outline-text-3" id="text-5-1">
 
 
 <p>
-git pull origin master | git pull origin TAG/VERSION
+git pull origin master
+git checkout NEXT<sub>TAG</sub>
 git submodule init
 db:migrate
 rake assets:clear
@@ -322,27 +421,20 @@ touch tmp/restart.txt
 
 </div>
 
-<div id="outline-container-4-2" class="outline-3">
-<h3 id="sec-4-2">Approach 2: Snapshot old instance, reinstall, restore old state</h3>
-<div class="outline-text-3" id="text-4-2">
+<div id="outline-container-5-2" class="outline-3">
+<h3 id="sec-5-2">Approach 2: Snapshot old instance, reinstall, restore old state</h3>
+<div class="outline-text-3" id="text-5-2">
 
 
-</div>
-</div>
-
-</div>
-
-<div id="outline-container-5" class="outline-2">
-<h2 id="sec-5">Using the web frontend</h2>
-<div class="outline-text-2" id="text-5">
-
-<p>(Tour of the UI, how to do stuff. Add after UI overhaul)
+<p>
+See backup/recovery chapter
 </p></div>
+</div>
 
 </div>
 
 <div id="outline-container-6" class="outline-2">
-<h2 id="sec-6">Authentication &amp; authorization</h2>
+<h2 id="sec-6"><span class="todo TODO">TODO</span> Authentication &amp; authorization</h2>
 <div class="outline-text-2" id="text-6">
 
 
@@ -366,7 +458,7 @@ touch tmp/restart.txt
 </div>
 
 <div id="outline-container-7" class="outline-2">
-<h2 id="sec-7">Keeping your site up</h2>
+<h2 id="sec-7"><span class="todo TODO">TODO</span> Keeping it running</h2>
 <div class="outline-text-2" id="text-7">
 
 
@@ -381,7 +473,7 @@ touch tmp/restart.txt
 </div>
 
 <div id="outline-container-7-2" class="outline-3">
-<h3 id="sec-7-2">Diagnostics</h3>
+<h3 id="sec-7-2">Diagnostic checks</h3>
 <div class="outline-text-3" id="text-7-2">
 
 </div>
@@ -390,15 +482,183 @@ touch tmp/restart.txt
 </div>
 
 <div id="outline-container-8" class="outline-2">
-<h2 id="sec-8">Backup &amp; disaster recovery</h2>
+<h2 id="sec-8">Backup, recovery, migration, cloning</h2>
 <div class="outline-text-2" id="text-8">
 
+
+<p>
+Gitorious has support for snapshotting and restoring its state, which
+makes it possible to easily perform backups, disaster recovery,
+cloning and migration of Gitorious sites.
+</p>
+
+</div>
+
+<div id="outline-container-8-1" class="outline-3">
+<h3 id="sec-8-1">Using the snapshot/restore commands</h3>
+<div class="outline-text-3" id="text-8-1">
+
+
+<p>
+If you're on a recent version of Gitorious (&gt;v2.3.0) you'll find two
+commands under the scripts directory: scripts/snapshot and
+scripts/restore. Each of them takes a single parameter: the path of
+the tar file you want your Gitorious installation backed up to, or
+restored from. Note that you'll need to launch the commands from the
+root directory of your Gitorious install (the directory where you find
+your Rakefile, Gemfile, config directory etc).
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-8-2" class="outline-3">
+<h3 id="sec-8-2">How to perform snapshots in older Gitorious versions</h3>
+<div class="outline-text-3" id="text-8-2">
+
+
+<p>
+It's fairly straightforward to add these new snapshot|restore commands
+to an older Gitorious instance a well: you only need to clone the
+latest version of the Gitorious code, and copy the following files to
+the same locations in your current, older installation:
+</p>
+<p>
+<code>script/restore</code>
+<code>script/snapshot</code>
+<code>lib/tasks/backup.rake</code>
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-8-3" class="outline-3">
+<h3 id="sec-8-3">Assumptions and caveats</h3>
+<div class="outline-text-3" id="text-8-3">
+
+
+<ul>
+<li>For disaster recovery, you'll first need to get a functional
+  installation of Gitorious up and running, after which you can run
+  the restore command to bring in your data again. Note that the
+  snapshot tarball also includes the configuration files from your old
+  Gitorious installation. They are not automatically copied into your
+  new installation, but can be used to recreate your old config in
+  your new Gitorious installation (useful if your previous Gitorious
+  installation had custom LDAP integration, custom hooks etc).
+
+</li>
+<li>Snapshots will not preserve any custom code or theming you may have
+  added to your Gitorious installation: any such local modifications
+  will need to be backed up and restored separately
+
+</li>
+<li>Some operations in Gitorious are asynchronous, meaning they are
+  performed by publishing/consuming messages on a queue. The
+  snapshot/restore commands don't currently capture or restore the
+  state of the queue, so any current work on the queue will be lost.
+
+</li>
+<li>The snapshot/recovery commands assume that you have the time and
+  disk-space to slurp down all your hosted repos into a local
+  tarball. Sites with huge amounts of git repository data may
+  therefore need more custom backup schemes.
+
+</li>
+<li>The restore command assumes that no breaking changes have happened
+  between the version you snapshot from, and the version you restore
+  your data into. In the future, major Gitorious version jumps may
+  necessitate a more manual restore procedure due to changes in
+  configurations, db schema, folder structure etc.
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-4" class="outline-3">
+<h3 id="sec-8-4">Scenarios</h3>
+<div class="outline-text-3" id="text-8-4">
+
+
+<p>
+The snapshot|restore commands are useful for multiple tasks beyond just standard backups.
+</p>
+
+</div>
+
+<div id="outline-container-8-4-1" class="outline-4">
+<h4 id="sec-8-4-1">Backup and disaster recovery</h4>
+<div class="outline-text-4" id="text-8-4-1">
+
+
+<p>
+Run periodic backups, for instance via cron. Execute the snapshot
+command, for example like this script/snapshot
+/tmp/todays-snapshot.tar. Transfer the newly created tarball to
+another server, offsite location or something like Amazon S3.
+</p>
+<p>
+If disaster strikes on your Gitorious installation, install a new
+instance of Gitorious, then run script/restore todays-snapshot.tar to
+restore your old state in the new installation.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-8-4-2" class="outline-4">
+<h4 id="sec-8-4-2">Migrations and clones</h4>
+<div class="outline-text-4" id="text-8-4-2">
+
+
+<p>
+The same procedure is useful if you just need to move or clone your
+Gitorious state from one server to another. Snapshot the old one, copy
+the tarball file over to the other installation and restore
+there. Simple.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-8-4-3" class="outline-4">
+<h4 id="sec-8-4-3">Upgrading ****</h4>
+<div class="outline-text-4" id="text-8-4-3">
+
+
+<p>
+Different scenario, same procedure: if you need to upgrade from an
+older version of Gitorious and don't want to bother with carefully
+upgrading your Gitorious instance across multiple versions, you can
+simply snapshot the state of your old Gitorious site, install a fresh
+new Gitorious instance and just restore your state there.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-8-4-4" class="outline-4">
+<h4 id="sec-8-4-4">Snapshots and rollbacks for development and testing</h4>
+<div class="outline-text-4" id="text-8-4-4">
+
+
+<p>
+If you're a developer extending, customizing or developing new
+features for Gitorious, you can use the snapshot|restore commands to
+simply setting up and restoring multiple standard database/repository
+states in order to simplify testing.
+</p>
+</div>
+</div>
 </div>
 
 </div>
 
 <div id="outline-container-9" class="outline-2">
-<h2 id="sec-9">Scaling</h2>
+<h2 id="sec-9"><span class="todo TODO">TODO</span> Scaling</h2>
 <div class="outline-text-2" id="text-9">
 
 
@@ -435,6 +695,7 @@ touch tmp/restart.txt
 <h3 id="sec-9-4">Repository hashing/sharding</h3>
 <div class="outline-text-3" id="text-9-4">
 
+
 </div>
 </div>
 
@@ -445,59 +706,91 @@ touch tmp/restart.txt
 <div class="outline-text-2" id="text-10">
 
 
+<p>
+You're running your own Gitorious site. Now something seems to be
+broken. Where do you start?
+</p>
+
 </div>
 
 <div id="outline-container-10-1" class="outline-3">
-<h3 id="sec-10-1">Current common sticking points</h3>
+<h3 id="sec-10-1">Diagnostics CLI tool</h3>
 <div class="outline-text-3" id="text-10-1">
 
 
+<p>
+Gitorious includes a self-diagnostic tool (available in v2.3.0 and
+onwards).
+</p>
+<p>
+Execute scripts/diagnose (as superuser/root), and Gitorious will print
+out a summary of its internals. Obvious problems in your setup will
+show up here, which should give you a clue as to what could be amiss
+in your installation.
+</p>
 </div>
 
-<div id="outline-container-10-1-1" class="outline-4">
-<h4 id="sec-10-1-1">Repo creation getting stuck</h4>
-<div class="outline-text-4" id="text-10-1-1">
+</div>
 
+<div id="outline-container-10-2" class="outline-3">
+<h3 id="sec-10-2">Diagnostics dashboard url</h3>
+<div class="outline-text-3" id="text-10-2">
+
+
+<p>
+You can also check the health of the site via the web frontend. If you
+are a site admin, browse to /admin/diagnostics at your Gitorious
+site. You'll be greeted with a diagnostics summary very similar to the
+script/diagnose command.
+</p>
 </div>
 
 </div>
 
-<div id="outline-container-10-1-2" class="outline-4">
-<h4 id="sec-10-1-2">&hellip;</h4>
-<div class="outline-text-4" id="text-10-1-2">
+<div id="outline-container-10-3" class="outline-3">
+<h3 id="sec-10-3">Check the FAQ</h3>
+<div class="outline-text-3" id="text-10-3">
+
+
+<p>
+(See FAQ chapter below)
+</p>
+</div>
 
 </div>
+
+<div id="outline-container-10-4" class="outline-3">
+<h3 id="sec-10-4">Ask the community</h3>
+<div class="outline-text-3" id="text-10-4">
+
+
+<p>
+If you're still stuck, consider asking the Gitorious community for
+suggestions.
+</p>
+<p>
+The core contributors and quite a few community members subscribe to
+the <a href="http://groups.google.com/group/gitorious?hl=en">Gitorious Google Group</a>. There's also an IRC channel
+available: #gitorious at freenode.net
+</p>
+<p>
+Finally, if you are considering paid support/help, note that <a href="http://gitorious.com">Gitorious AS</a> offers commercial support.
+</p>
 </div>
 </div>
 
 </div>
 
 <div id="outline-container-11" class="outline-2">
-<h2 id="sec-11">Developing</h2>
+<h2 id="sec-11"><span class="todo TODO">TODO</span> Frequently Asked Questions</h2>
 <div class="outline-text-2" id="text-11">
 
-
-</div>
-
-<div id="outline-container-11-1" class="outline-3">
-<h3 id="sec-11-1">Setting up your development environment</h3>
-<div class="outline-text-3" id="text-11-1">
-
-</div>
-
-</div>
-
-<div id="outline-container-11-2" class="outline-3">
-<h3 id="sec-11-2">Submitting patches and merge requests</h3>
-<div class="outline-text-3" id="text-11-2">
-
-</div>
 </div>
 
 </div>
 
 <div id="outline-container-12" class="outline-2">
-<h2 id="sec-12">Contributing</h2>
+<h2 id="sec-12"><span class="todo TODO">TODO</span> Contributing to Gitorious</h2>
 <div class="outline-text-2" id="text-12">
 
 
@@ -507,29 +800,119 @@ touch tmp/restart.txt
 <h3 id="sec-12-1">Bug reports</h3>
 <div class="outline-text-3" id="text-12-1">
 
+
+<p>
+Found a bug or annoyance? Please let the maintainers know via the official
+issuetracker at <a href="https://issues.gitorious.org/">https://issues.gitorious.org/</a>.
+</p>
 </div>
 
 </div>
 
 <div id="outline-container-12-2" class="outline-3">
-<h3 id="sec-12-2">Merge Requests</h3>
+<h3 id="sec-12-2">Hacking on Gitorious</h3>
 <div class="outline-text-3" id="text-12-2">
 
+
+</div>
+
+<div id="outline-container-12-2-1" class="outline-4">
+<h4 id="sec-12-2-1"><span class="todo TODO">TODO</span> Setting up your development environment</h4>
+<div class="outline-text-4" id="text-12-2-1">
+
+
+<p>
+Howto: Set up enough dependencies and code locally to run the Gitorious test suite.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-12-2-2" class="outline-4">
+<h4 id="sec-12-2-2"><span class="todo TODO">TODO</span> Deploying and testing your code in a "cleanroom" VM</h4>
+<div class="outline-text-4" id="text-12-2-2">
+
+
+<p>
+Howto: Deploy and test your code in a basic gitorious community edition VM
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-12-2-3" class="outline-4">
+<h4 id="sec-12-2-3">Coding style</h4>
+<div class="outline-text-4" id="text-12-2-3">
+
+
+<ul>
+<li>Two spaces, no tabs, for indention
+</li>
+<li>Don't use and and or for boolean tests, instead always use &amp;&amp; and ||
+</li>
+<li>MyClass.my<sub>method</sub>(my<sub>arg</sub>) &ndash; not my<sub>method</sub>( my<sub>arg</sub> ) or my<sub>method</sub> my<sub>arg</sub>
+</li>
+<li>Unless precedence is an issue; do .. end for multi-line blocks, braces for single line blocks
+</li>
+<li>Follow the conventions you see used in the source already
+</li>
+</ul>
+
+
+<p>
+(copied mostly verbatim from dev.rubyonrails.org)
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-12-2-4" class="outline-4">
+<h4 id="sec-12-2-4">Branching model</h4>
+<div class="outline-text-4" id="text-12-2-4">
+
+
+<p>
+Gitorious uses
+[the git-flow branching model](<a href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a>)
+for branching. This means that the master branch is stable, and is
+only merged to once a feature has been completed.
+</p>
+<p>
+New features are created in feature branches (named `feature/$name`)
+and then merged into the `next` branch once finished. Such features
+arrive in `master` as new releases.
+</p>
+<p>
+When contributing new features into Gitorious as merge requests, these
+should be started the `next` branch, and marked as such when proposed.
+</p>
+<p>
+The exception to this is hotfixes, which may be started from and
+proposed merged into `master`. Please note that hotfixes should not
+implement new functionality.
+</p>
+</div>
 </div>
 
 </div>
 
 <div id="outline-container-12-3" class="outline-3">
-<h3 id="sec-12-3">Community funded features</h3>
+<h3 id="sec-12-3">Don't have time yourself? Fund new features!</h3>
 <div class="outline-text-3" id="text-12-3">
 
+
+<p>
+If your company has urgent need of new features/modifications in
+Gitorious, please get in touch with the core contributors via
+team@gitorious.org for funding development of your proposed features.
+</p>
 </div>
 </div>
 
 </div>
 
 <div id="outline-container-13" class="outline-2">
-<h2 id="sec-13">Need more help?</h2>
+<h2 id="sec-13"><span class="todo TODO">TODO</span> Need more help?</h2>
 <div class="outline-text-2" id="text-13">
 
 
@@ -555,22 +938,15 @@ touch tmp/restart.txt
 <h3 id="sec-13-3">Gitorious AS services &amp; products</h3>
 <div class="outline-text-3" id="text-13-3">
 
+
 </div>
 </div>
 
 </div>
 
 <div id="outline-container-14" class="outline-2">
-<h2 id="sec-14">Feedback</h2>
+<h2 id="sec-14"><span class="todo TODO">TODO</span> Feedback</h2>
 <div class="outline-text-2" id="text-14">
-
-</div>
-
-</div>
-
-<div id="outline-container-15" class="outline-2">
-<h2 id="sec-15">Frequently Asked Questions</h2>
-<div class="outline-text-2" id="text-15">
 
 </div>
 </div>
