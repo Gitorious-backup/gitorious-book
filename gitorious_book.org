@@ -13,7 +13,7 @@
 #+XSLT:
 
 #+BEGIN_HTML
-<p><strong>This is the new, official Gitorious
+<p><strong>18th October: This is the new, official Gitorious
  documentation and is a work in progress.</strong> New content will
  arrive here gradually. In the meantime, please seek out the <a
  href="http://gitorious.org/gitorious/pages/Home">project wiki</a> or
