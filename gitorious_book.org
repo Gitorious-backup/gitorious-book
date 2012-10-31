@@ -13,7 +13,7 @@
 #+XSLT:
 
 #+BEGIN_HTML
-<p><strong>18th October: This is the new, official Gitorious
+<p><strong>31st October 2012: This is the new, official Gitorious
  documentation and is a work in progress.</strong> New content will
  arrive here gradually. In the meantime, please seek out the <a
  href="http://gitorious.org/gitorious/pages/Home">project wiki</a> or
@@ -325,6 +325,17 @@ To upgrade from version 2.3.0 to 2.3.1, follow these steps:
 #+begin_src shell
 git fetch git://gitorious.org/gitorious/mainline.git
 git merge v2.3.1
+bundle install
+rake assets:clear
+touch tmp/restart.txt
+#+end_src
+**** Upgrading from 2.3.1 to 2.3.2
+
+To upgrade from version 2.3.1 to 2.3.2, follow these steps:
+
+#+begin_src shell
+git fetch git://gitorious.org/gitorious/mainline.git
+git merge v2.3.2
 bundle install
 rake assets:clear
 touch tmp/restart.txt
