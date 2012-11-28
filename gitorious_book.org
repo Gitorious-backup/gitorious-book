@@ -463,6 +463,45 @@ states in order to simplify testing.
    distributing the load over multiple serves
 ** Repository hashing/sharding
 
+* The setup on gitorious.org
+  As you probably know, gitorious.org runs the exact same version of
+  the Gitorious mainline repository as distributed on
+  gitorious.org. The setup we're running on those servers may be a bit
+  more complex than what you need to setup yourself, but in case
+  you're curious or plan to operate a Gitorious site with hundreds of
+  thousands of users, this chapter is for you.
+
+** Deployment
+   We use [[https://github.com/capistrano/capistrano/wiki][Capistrano]] to deploy to the gitorious.org servers. We keep
+   our Capfile and deploy.rb in a separate Git repository, and deploy
+   from that repository.
+
+   The configuration files for the gitorious.org servers
+   (database.yml, gitorious.yml etc) are kept in this repository and
+   pushed (via Capistrano's =upload= task) to the =app/shared=
+   directory on the server after the code is updated; which in turn
+   are symlinked into =app/current/config=. The rest of the deployment
+   process is fairly standard; but we have added Capistrano tasks for
+   starting/stopping/re-indexing Thinking Sphinx, starting/stopping
+   Resque workers etc.
+
+   The =restart= task we use is a bit special. Since we use Unicorn
+   (more on that later), we don't do the =touch tmp/restart.txt=
+   maneuvre, and we want to reindex the search index after
+   deploying. In our previous setup we ran the indexing from
+   Capistrano, which caused some really long-running deployments with
+   a lot of output. Our current =restart= task emits an Upstart event
+   which triggers a =post-deploy= Upstart task to run on the
+   server. The last action performed is to send a USR2 to the Unicorn
+   master, which results in reloading the server. When the
+   =post-deploy= process has ended on the server, a deployment report
+   is sent by email to us with a result of what happened (still work
+   is still not 100% done).
+** Web servers
+
+** Message queue and consumers
+
+** Init scripts and process babysitting
 * Troubleshooting
 
 You're running your own Gitorious site. Now something seems to be
