@@ -485,6 +485,36 @@ states in order to simplify testing.
    starting/stopping/re-indexing Thinking Sphinx, starting/stopping
    Resque workers etc.
 
+#+BEGIN_SRC ruby
+  namespace :sphinx do
+    desc "Configure Thinking Sphinx"
+    task :configure, :roles => :app do
+      run "sudo #{current_path}/bin/rake ts:configure"
+    end
+
+    desc "Update Index"
+    task :update_index, :roles => :app do
+      run "sudo #{current_path}/bin/rake ts:reindex"
+    end
+
+    desc "Stop Sphinx"
+    task :stop, :roles => :app do
+      run "sudo #{current_path}/bin/rake ts:stop"
+    end
+
+    desc "Start Sphinx"
+    task :start, :roles => :app do
+      run "sudo #{current_path}/bin/rake ts:start"
+    end
+
+    desc "Restart Sphinx"
+    task :restart, :roles => :app do
+      run "sudo #{current_path}/bin/rake ts:restart"
+    end
+  end
+
+#+END_SRC
+
    The =restart= task we use is a bit special. Since we use Unicorn
    (more on that later), we don't do the =touch tmp/restart.txt=
    maneuvre, and we want to reindex the search index after
@@ -506,11 +536,11 @@ states in order to simplify testing.
     a zero-config setup, and will do wonderful things to the
     responsiveness of your app provided you take care of two things:
 
-    - Any request with a Set-Cookie response header will not be cached
+    - Any request with a =Set-Cookie= response header will not be cached
       by Varnish
-    - As long as the Cache-Control response header is set to public,
+    - As long as the =Cache-Control= response header is set to public,
       Varnish will cache the request for as long as specified by the
-      max-age parameter.
+      =max-age= parameter.
 
     Varnish is set up to handle port 80 (HTTP) on our servers, and is
     set up with a single backend: the private Nginx server mentioned
