@@ -52,7 +52,7 @@
 
    The =restart= task we use is a bit special. Since we use Unicorn
    (more on that later), we don't do the =touch tmp/restart.txt=
-   maneuvre, and we want to reindex the search index after
+   maneuver, and we want to reindex the search index after
    deploying. In our previous setup we ran the indexing from
    Capistrano, which caused some really long-running deployments with
    a lot of output. Our current =restart= task emits an Upstart event
@@ -125,7 +125,7 @@
 
     The =/tarballs/= locations are marked as private in Nginx, which
     means a user isn't allowed to request them directly. Using Apache
-    with mod_x_sendfile the =X-Sendfile= header would contain the full
+    with mod\_x\_sendfile the =X-Sendfile= header would contain the full
     path to the repository, while Nginx lets us maintain a symbolic
     mapping resolved by Nginx itself.
 
