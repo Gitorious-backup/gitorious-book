@@ -659,3 +659,4 @@ team@gitorious.org for funding development of your proposed features.
 ** Gitorious AS services & products
 
 * TODO Feedback
+  Read about the [[file:gitorious-org-setup.org::*The%20setup%20on%20gitorious.org][The setup on gitorious.org]]
