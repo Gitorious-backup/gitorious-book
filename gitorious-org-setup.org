@@ -20,6 +20,7 @@
    starting/stopping/re-indexing Thinking Sphinx, starting/stopping
    Resque workers etc.
 
+   Our Sphinx tasks look like this:
 #+BEGIN_SRC ruby
   namespace :sphinx do
     desc "Configure Thinking Sphinx"
@@ -48,6 +49,24 @@
     end
   end
 
+#+END_SRC
+
+   While the Capistrano recipes for controlling Resque are quite
+   minimal (they simply call Upstart's =status= command, since our
+   Resque workers are managed by Upstart:
+
+#+BEGIN_SRC ruby
+  namespace :resque do
+    desc "Restart the resque workers"
+    task :restart, :roles => :app do
+      run "sudo /sbin/restart gitorious/resque-worker"
+    end
+
+    desc "Status of resque workers"
+    task :status, :roles => :app do
+      run "/sbin/status gitorious/resque-worker"
+    end
+  end
 #+END_SRC
 
    The =restart= task we use is a bit special. Since we use Unicorn
@@ -86,7 +105,9 @@
     We run [[http://nginx.org/][Nginx]] on port 443, since Varnish doesn't run SSL. The
     server running on gitorious.org:443 will serve any static files
     directly from =Rails.root= on the server, and proxy any other
-    request to the public Varnish server on port 80.
+    request to the public Varnish server on port 80. By sending these
+    requests through Varnish, we get to use the same cache for HTTP
+    and HTTPS.
 
     Nginx is also set up to listen on a private port, where it
     receives requests from (only) Varnish. Like the HTTPS Nginx
@@ -125,9 +146,9 @@
 
     The =/tarballs/= locations are marked as private in Nginx, which
     means a user isn't allowed to request them directly. Using Apache
-    with mod\_x\_sendfile the =X-Sendfile= header would contain the full
-    path to the repository, while Nginx lets us maintain a symbolic
-    mapping resolved by Nginx itself.
+    with =mod_x_sendfile= the =X-Sendfile= header would contain the
+    full path to the repository, while Nginx lets us maintain a
+    symbolic mapping resolved by Nginx itself.
 
     The same mechanism is used for Git over HTTP.
 
@@ -138,8 +159,8 @@
     fork(2) to create 16 child processes (this is how many workers we
     have running on gitorious.org). These child processes will inherit
     the socket set up by the master process, which means the kernel
-    will take care of load balancing the requests to the active worker
-    processes.
+    will take care of load balancing the requests between the active
+    worker processes.
 
     Unicorn is designed for chaotic situations, like the one we have
     on gitorious.org. An IO intensive application like Gitorious will
