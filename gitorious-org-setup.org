@@ -194,6 +194,34 @@
     use a full path in =RAILS_ROOT= since expanding a relative path
     would resolve to Capistrano's =app/releases= directory.
 
+*** Git over HTTP (New!)
+    As you may be aware, Git supports two kinds of Git over HTTP. The
+    "dumb" protocol, which basically creates an HTTP request for every
+    commit, and "smart" HTTP which uses HTTP as a carrier for
+    git-upload-pack. The git-scm.com site [[http://git-scm.com/2010/03/04/smart-http.html][has all the details.]]
+
+    Gitorious ships with a simplistic version of the former, a Rails
+    metal which uses Nginx' =X-Accel-Redirect= or Apache's
+    =X-Sendfile= to deliver Git objects directly from the file
+    system. This method is inefficient and somewhat error-prone, but
+    after setting up the new servers last week the stability of this
+    solution was not near good enough.
+
+    Friday afternoon we set up another backend for Git over HTTP,
+    using a Jgit based servlet for doing Git over HTTP. I ran it using
+    Maven for a few hours, after setting up Varnish to proxy traffic
+    to git.gitorious.org to this Java app. This speeded up HTTP
+    cloning a lot, so we decided to run it through the weekend.
+
+    After running it for around 48 hours the Jetty server was using
+    around 5 GB of (resident) RAM, having served around 80.000 git
+    clone operations through the weekend.
+
+    The app we're running for this is a single Java webapp, and the
+    source code is at
+    https://gitorious.org/gitorious/jgit-http-server. We're working on
+    a push+pull implementation in Jruby, also using JGit, but we
+    really like the way Java and Jgit works for us.
 ** Message queue and consumers
    gitorious.org has been using [[http://activemq.apache.org/][Apache ActiveMQ]] since 2009, and we
    have not had a single problem with using that. No messages dropped,
