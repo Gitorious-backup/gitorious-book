@@ -689,4 +689,103 @@ team@gitorious.org for funding development of your proposed features.
 ** #gitorious on IRC
 ** Gitorious AS services & products
 
+* Customizing the user interface in Gitorious
+  If you wish to customize your Gitorious server, there are a lot of
+  things that can be adjusted, from very basic settings to building
+  your own templates.
+
+  All of these settings require you to make changes to the
+  =config/gitorious.yml= file inside your Gitorious installation, and
+  the included sample file in =config/gitorious.sample.yml= contains
+  an up-to-date description of the various settings.
+
+  Once you have made changes to the =config/gitorious.yml= file
+  you'll need to restart your application server. If you use [[https://www.phusionpassenger.com/][Phusion
+  Passenger]], simply touch the =tmp/restart.txt= file, for [[http://unicorn.bogomips.org/SIGNALS.html][Unicorn]]
+  send a =USR1= signal to your Unicorn master process.
+** "On/off settings"
+   These settings are very basic toggles:
+   - The =is_gitorious_dot_org= setting specifies whether you want
+     the "flashy" main page used on gitorious.org or not.
+   - The =extra_html_head_data= setting lets you add custom HTML data
+     to be included in the =<head>= section of all pages.
+   - The =additional_footer_links= setting lets you add extra links
+     to the footer of the pages.
+   - The =terms_of_use= setting lets you turn off acceptance of the
+     terms of use.
+   - The =terms_of_service_url= setting lets you specify the link to
+     the terms of service, used in the footer and as a link from the
+     prompt to accept the terms of service when new users register.
+   - The =privacy_policy_url= setting lets you specify a different
+     link for the privacy policy linked to in the site footer.
+   - The =site_name= setting lets you change the default site name
+     used in HTML =<title>= tags
+   - The =custom_username_label= setting lets you specify a different
+     label for the username field on the login page. Very useful for
+     LDAP based authentication.
+   - The =favicon_url= setting lets you specify the path, relative to
+     the =public= directory in your Gitorious installation, where your
+     favicon is.
+   - The =logo_url= setting lets you specify the URL to a use as an
+     =<img>= tag for your logo.
+** Further customizations
+   If adjusting the toggled mentioned in the previous settings
+   doesn't quite do it for you, Gitorious lets you supply your own
+   stylesheets or build your own layout files.
+
+*** The =common_stylesheets= setting
+    Additional stylesheets for most pages. "Most pages" is everything
+    except for the frontpage/public index, login page and the register
+    page.
+
+    One way to theme Gitorious would be to put a submodule in =public/=
+    that contains stylesheets and images. Then include the following
+    setting (assuming that your submodule is at =public/mytheme=, and
+    includes a directory =stylesheets/theme.css=):
+
+#+BEGIN_EXAMPLE
+common_stylesheets: /mytheme/stylesheets/theme
+#+END_EXAMPLE
+
+    If you have several files:
+
+#+BEGIN_EXAMPLE
+common_stylesheets:
+  - /mytheme/stylesheets/theme
+  - /mytheme/stylesheets/theme2
+#+END_EXAMPLE
+
+    Note that the extra stylesheets will be added to the bundle used
+    in production.
+
+*** The =external_stylesheets= setting
+    Like =common_stylesheets=, but applies to the frontpage and login pages.
+*** The =additional_view_paths= setting
+    Add more view paths if you want to override some or all of
+    Gitorious' views. *Make sure you know what you're doing before
+    attepting this - there is no API guarantee from the current
+    controllers.* If you override views, study the git log (the
+    Changelog may not mention these changes) before upgrading.
+
+    Any =.html.erb= files you put into this directory should have a
+    path relative to the =additional_view_paths= setting; in that
+    case those files will be preferred to the ones shipping with
+    Gitorious itself. For example, to supply your own view file for
+    the "show user" page (=UsersController#show=), you should add a
+    file in =$additional_view_paths/views/users/show.html.erb=
+    containing the ERB code to be used in that view. Start out by
+    copying =app/views/users/show.html.erb= to your custom directory,
+    and make changes to that file. If you do this on your own
+    computer, running Gitorious with =RAILS_ENV=development= you can
+    reload the page in your browser to view the changes. On a
+    production server, a restart is needed to view the changes.
+
+    You should take great care to ensure that all necessary navigation
+    items are preserved in your overriding files, and you should
+    verify that your layout still works after upgrading your
+    Gitorious server to new minor/major versions.
+
+    It's recommended to use something like Git's submodules to add
+    these views to your site.
+
 * TODO Feedback
