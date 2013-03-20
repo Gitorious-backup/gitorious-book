@@ -486,7 +486,7 @@ simply setting up and restoring multiple standard database/repository
 states in order to simplify testing.
 
 * TODO Scaling
-** Caching with Vagrant
+** Caching with Varnish
 ** Horizontal scaling
    what sort of hardware will you need to keep a single server running
    under misc typical usage scenarios?
