@@ -1,0 +1,219 @@
+* How to run virtualization on a headless server?
+  Most non-sysadmin people have only used GUI tools such as VMWare,
+  VirtualBox or Parallels, and don't know how to set up a virtual
+  machine on a computer without a GUI. We have some good news for
+  you: you will be able to use GUI tools on your workstation to work
+  with virtual machines running on a datacenter server, and it really
+  isn't too difficult.
+
+  There are countless ways of doing virtualizations on Linux, this
+  example guides you through using the Kernel Virtualization Module
+  (KVM) together with a user-space tool called qemu. This means that
+  a kernel module will take care of the heavy lifting, while qemu
+  will be what you see on your computer.
+
+  Start off with the "Prerequisites" section below, and then continue
+  to the section which fits you best:
+
+  - If you run Linux on your local computer and you want to
+    familiarize yourself with how qemu works, read the section [[*Manual%20qemu%20setup][Manual
+    qemu setup]] below. You'll be able to log into your server within a
+    few minutes.
+
+  - If you're not running Linux on your local computer, or if you'd
+    rather start with a production-ready setup, jump straight to the
+    [[*Using%20libvirt][Using libvirt]] section below and start building your production
+    server.
+
+** Prerequisites
+*** Install qemu-img on the server
+    To work with different virtual disk images on your server, you'll
+    need the =qemu-img= tool installed.
+
+#+BEGIN_EXAMPLE
+# Fedora/CentOS/RedHat:
+(sudo) yum install qemu-img
+
+# Debian/Ubuntu
+(sudo) apt-get install qemu
+#+END_EXAMPLE
+*** Download the virtual appliance to your server
+    To download the Gitorious Virtual Appliance (version 2.4.9) to
+    your server, enter this in a terminal on the server:
+
+#+BEGIN_EXAMPLE
+wget https://d108pufawv7tg5.cloudfront.net/gitorious-ce-va-v2.4.9.ova
+#+END_EXAMPLE
+
+*** Extract the vmdk file from the ova file
+    The ova file is a tarball containing an XML file describing the
+    machine, and a vmdk image file. To extract these from the ova
+    file, enter:
+
+#+BEGIN_EXAMPLE
+tar xf gitorious-ce-va-v2.4.9.ova
+#+END_EXAMPLE
+
+*** Convert the vmdk file to a raw image file
+    Qemu ships with a tool which converts between virtually all
+    virtual disk file formats. To convert the vmdk to an .img file,
+    enter
+
+#+BEGIN_EXAMPLE
+qemu-img convert <gitorious>.vmdk <gitorious>.img
+#+END_EXAMPLE
+
+** Manual qemu setup
+   This step is completely optional, but it will help you understand
+   a little more about what's actually happening when you use
+   qemu/kvm for virtualization. You will need to run Linux on your
+   local machine; either natively or in a virtual machine.
+
+*** Install qemu
+    First of all you'll need to install Qemu, a machine emulator and
+    virtualizer. By using Qemu as a machine emulator, you get a really
+    simple tool to emulate a processor, albeit a fairly slow one. By
+    using Qemu as a virtualizer, you get a just as simple tool which
+    is a lot faster and uses your native CPU for virtualization.
+
+    To install Qemu on your computer:
+
+#+BEGIN_EXAMPLE
+# On Debian/Ubuntu:
+(sudo) apt-get install qemu-kvm
+# On Fedora/RedHat:
+(sudo) yum install qemu-kvm
+#+END_EXAMPLE
+
+*** Start the appliance
+    Now that you have Qemu installed and a usable disk image (follow
+    the steps in the "Prerequisites" section above, or copy the files
+    from your server to your computer) it's time to try it out.
+
+    To start a virtual machine with 1G RAM, booting from the Gitorious
+    VA disk image:
+
+#+BEGIN_EXAMPLE
+qemu-kvm -m 1024 -hda gitorious.img -snapshot
+#+END_EXAMPLE
+
+    The =-m 1024= option sets your VM up with 1G RAM, the =-hda= option
+    specifies which file to use as the first hard drive, and the
+    =-snapshot= option makes your VM discard any changes you make
+    when you shut down the VM.
+
+    After a few seconds you'll see a new window open (this is
+    actually a VNC client), and you'll be able to log into your VA
+    after a few more seconds. Simply enter =Ctrl-C= in the terminal
+    where you started the VM to shut down the VM.
+
+** Using libvirt
+   Libvirt is a set of tools which provide a single interface to
+   various virtualization backends like KVM and Xen. We're going to
+   install some of the tools on your server, and then another set of
+   tools you can run on your local computer. Again, if you're not
+   using Linux on your local computer, you can install the client
+   tools in a virtual machine on your computer (VMWare, Parallels,
+   VirtualBox will all work).
+
+   Please note that your server needs to be running non-virtualized,
+   running virtual machines inside a virtual machine probably isn't
+   going to work.
+
+   The following commands assume your server is running; for other
+   operating systems you'll need to install a different set of packages.
+
+*** Install libvirt on your server
+    First of all, install a few packages on your server:
+
+#+BEGIN_EXAMPLE
+# On Ubuntu:
+qemu-kvm libvirt-bin bridge-utils
+#+END_EXAMPLE
+
+    Next, only user accounts on your server who are member of the
+    =libvirtd= group are allowed to use KVM virtual machines. Add
+    your user account to this group on the server:
+
+#+BEGIN_EXAMPLE
+sudo adduser $USER libvirtd
+#+END_EXAMPLE
+
+    Now, start the libvirtd virtualization daemon on your server:
+
+#+BEGIN_EXAMPLE
+sudo service libvirt-bin start
+#+END_EXAMPLE
+
+    To verify that everything is OK, enter:
+
+#+BEGIN_EXAMPLE
+virsh -c qemu:///system list
+#+END_EXAMPLE
+
+*** Move the disk image to where libvirt can find it
+    The libvirt tools work with several storage pools, which is a
+    really nice feature, but for now we just want to make the disk
+    image we converted into a location where libvirt can find it.
+
+    Move the disk image you created in the "[[*Convert%20the%20vmdk%20file%20to%20a%20raw%20image%20file][Convert the vmdk file to a
+    raw image file]]" section above into the =/var/lib/libvirt/images=
+    directory on your server:
+
+#+BEGIN_EXAMPLE
+cd /path/to/gitorious.img
+mv gitorious.img /var/lib/libvirt/images/
+#+END_EXAMPLE
+
+    You will need to be root to do this.
+
+*** Install virt-manager on your workstation
+    Now it's time to install the GUI tools to work with the KVM
+    guests on your local computer. If you're using a non-Linux
+    operating system on your local computer, set up a virtual machine
+    with a Linux version on it.
+
+    The package you'll need to install is called =virt-manager= on
+    both Ubuntu/Debian and Fedora/RedHat systems. To install the
+    tools, enter:
+
+#+BEGIN_EXAMPLE
+# Ubuntu/Debian:
+sudo apt-get install virt-manager
+
+# Fedora/RedHat/CentOS:
+sudo yum install virt-manager
+#+END_EXAMPLE
+
+    Once it's installed, simply start the GUI like this:
+
+#+BEGIN_EXAMPLE
+virt-manager &
+#+END_EXAMPLE
+
+    You'll see a window opening, and from here we'll add a connection
+    to your server over SSH. Select File->Add connection, and fill it
+    out like this:
+
+    - Hypervisor: Select "QEMU/KVM"
+    - Click the "Connect to remote host" checkbox
+    - Method: SSH
+    - Username: Enter your username on your server
+    - Hostname: Enter the hostname/IP address of your server
+
+    Click "Connect". Once your're connected, right-click your server
+    in the list and select "New". Enter a name for the new virtual
+    machine, and select the "Import existing disk image"
+    option. Click "Forward".
+
+    Click the "Browse" button, and locate the disk image we created
+    previously. Click it, and select "Choose volume". Enter "Linux" as
+    OS type, and "RedHat Enterprise Linux 6" as OS version. Click
+    "Forward".
+
+    On the next screen, select how much RAM and how many CPUs to
+    allocate to the virtual machine, and click "Forward". Click
+    "Finish", and your virtual machine is ready for use.
+
+    Simply double-click the virtual machine you just created, watch
+    it boot and log into the machine through the console.
