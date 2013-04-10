@@ -104,6 +104,12 @@ export HTTP_PROXY=http://10.0.0.30:3128/
 bin/bundle install
 #+END_EXAMPLE
 
+*** If you run into trouble
+    If something goes wrong and you're unable to complete the process
+    using the steps above, you may need to use sudo to enter commands
+    manually. In that case, make sure you pass the =-E= switch to
+    sudo. That will pass along your environment variables
+    (eg. =HTTP_PROXY=).
 
 * TODO Using the web frontend
 ** Registering your user
