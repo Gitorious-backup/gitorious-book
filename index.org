@@ -43,6 +43,68 @@ File structure, how we handle incoming ssh/git operations, the gitorious script
 *** Debian / Ubuntu
 ** Case study: Gitorious.org
    Read about the [[file:gitorious-org-setup.org::*The%20setup%20on%20gitorious.org][The setup on gitorious.org]]
+** Installing without direct Internet access
+   To install Gitorious without direct access to the Internet, we
+   need to do some legwork. Assuming our http proxy is on
+   =http://10.0.0.30:3128/= we need to let Git and Bundler/Rubygems
+   work through the proxy. We also need to make sure we're only
+   using http(s) git URLs.
+
+   Start off by entering the Gitorious root directory
+
+#+BEGIN_EXAMPLE
+cd /var/www/gitorious/app
+#+END_EXAMPLE
+
+*** First, make sure the Gitorious =origin= remote uses HTTPS
+     SSH or Git URLs won't work:
+
+#+BEGIN_EXAMPLE
+git remote set-url origin https://git.gitorious.org/gitorious/mainline.git
+#+END_EXAMPLE
+
+*** Next, make git use a proxy
+     We'll use the =--global= flag to =git config= so the proxy is
+     used for submodules too:
+
+#+BEGIN_EXAMPLE
+git config --global http.proxy http://10.0.0.30:3128/
+#+END_EXAMPLE
+
+*** Fetch and merge the latest release tag
+#+BEGIN_EXAMPLE
+git fetch
+git merge v2.4.12
+#+END_EXAMPLE
+
+*** Update the submodules
+#+BEGIN_EXAMPLE
+git submodule update --init
+#+END_EXAMPLE
+
+*** Ensure ownerships are set up correctly
+     We'll be using the =bin/bundle= wrapper for Bundler, so we need
+     to make sure =vendor/bundle= is writable by the git user
+
+#+BEGIN_EXAMPLE
+chown -R git:git vendor/bundle
+#+END_EXAMPLE
+
+*** Bundle install
+     Bundler ignores any =.gemrc= settings, but respects the
+     =HTTP_PROXY= environment variable. Let's use that:
+
+#+BEGIN_EXAMPLE
+export HTTP_PROXY=http://10.0.0.30:3128/
+#+END_EXAMPLE
+
+     By now we should be able to run bundle install:
+
+#+BEGIN_EXAMPLE
+bin/bundle install
+#+END_EXAMPLE
+
+
 * TODO Using the web frontend
 ** Registering your user
 ** Adding your ssh key
