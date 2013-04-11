@@ -544,7 +544,7 @@ one and recovering in a freshly installed new one. This also has the
 benefit of not screwing up your older, working installation if
 something goes wrong.
 
-(See the backup/recovery chapter below)
+(See the [[*Backup,%20recovery,%20migration,%20cloning][Backup, recovery, migration, cloning]] below)
 
 * TODO Authentication & authorization
 ** LDAP integration
