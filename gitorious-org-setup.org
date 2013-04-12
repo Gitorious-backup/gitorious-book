@@ -245,11 +245,11 @@
 
 *** Install Redis
     On Ubuntu/Debian servers:
-#+BEGIN_EXAMPLE
-sudo apt-get install redis-server
-update-rc.d redis-server defaults
-sudo service start redis-server
-#+END_EXAMPLE
+#+BEGIN_SRC shell-script
+  sudo apt-get install redis-server
+  update-rc.d redis-server defaults
+  sudo service start redis-server
+#+END_SRC
 
     On RHEL/CentOS-like systems:
 #+BEGIN_EXAMPLE
