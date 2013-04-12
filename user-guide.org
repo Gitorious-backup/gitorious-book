@@ -1,4 +1,6 @@
 #+TITLE:     Gitorious user guide
+#+LINK_UP:   index.html
+#+LINK_HOME: /
 
 * Gitorious user guide
 ** TODO Using the web frontend

@@ -1,4 +1,8 @@
 #+TITLE:     Gitorious developer guide
+#+LINK_UP:   index.html
+#+LINK_HOME: /
+
+
 * Gitorious developer guide
 ** Contributing to Gitorious
 *** Bug reports

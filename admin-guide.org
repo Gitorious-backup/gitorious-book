@@ -1,7 +1,6 @@
 #+TITLE:     Gitorious administration guide
 #+LINK_UP:   index.html
 #+LINK_HOME: /
-#+XSLT:
 
 * Gitorious administration guide
 ** TODO How Gitorious works
