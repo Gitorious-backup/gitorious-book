@@ -17,6 +17,9 @@ and is a work in progress. New content will arrive here gradually. In
 the meantime, please seek out the [[http://gitorious.org/gitorious/pages/Home][Project wiki]] or the [[http://groups.google.com/group/gitorious?hl%3Den][Gitorious Google
 Group]] for documentation and troubleshooting.
 
+#+BEGIN_HTML
+<span class="label label-success">New!</span>
+#+END_HTML
 See either the [[file:admin-guide.org::*Gitorious%20administration%20guide][Gitorious administration guide]], the [[file:user-guide.org::*Gitorious%20user%20guide][Gitorious user
 guide]] or the [[file:developer-guide.org::*Gitorious%20developer%20guide][Gitorious developer guide]].
 
