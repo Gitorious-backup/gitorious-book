@@ -19,10 +19,13 @@ Group]] for documentation and troubleshooting.
 
 
 @<div class="alert alert-block">We've reorganized the
-pages into different documents as the content has grown.@</div>
+pages into different documents as the content has grown.
 
 See either the [[file:admin-guide.org::*Gitorious%20administration%20guide][Gitorious administration guide]], the [[file:user-guide.org::*Gitorious%20user%20guide][Gitorious user
 guide]] or the [[file:developer-guide.org::*Gitorious%20developer%20guide][Gitorious developer guide]].
+@</div>
+
+
 
 * TODO Introduction						   :noexport:
 ** History
