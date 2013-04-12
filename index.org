@@ -18,7 +18,10 @@ the meantime, please seek out the [[http://gitorious.org/gitorious/pages/Home][P
 Group]] for documentation and troubleshooting.
 
 
-@<span class="label label-success">New!@</span>See either the [[file:admin-guide.org::*Gitorious%20administration%20guide][Gitorious administration guide]], the [[file:user-guide.org::*Gitorious%20user%20guide][Gitorious user
+@<div class="alert alert-block">We've reorganized the
+pages into different documents as the content has grown.@</div>
+
+See either the [[file:admin-guide.org::*Gitorious%20administration%20guide][Gitorious administration guide]], the [[file:user-guide.org::*Gitorious%20user%20guide][Gitorious user
 guide]] or the [[file:developer-guide.org::*Gitorious%20developer%20guide][Gitorious developer guide]].
 
 * TODO Introduction						   :noexport:
