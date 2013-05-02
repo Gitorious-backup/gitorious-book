@@ -617,6 +617,54 @@ simply setting up and restoring multiple standard database/repository
 states in order to simplify testing.
 
 ** TODO Scaling
+
+*** Caching with Nginx
+    There are a couple of actions in Gitorious which benefits
+    greatly from caching. The basic premise when setting up caching
+    is to ensure that you don't cache what shouldn't be cached;
+    fortunately most caching servers will respect a few basic
+    principles:
+
+    - Respect the =Cache-Control= headers, specifically don't cache
+      data marked as =private=, and respect the =max-age= part of the
+      =Cache-Control= headers
+    - Don't cache data which is delivered with =Set-Cookie= headers
+      from the backend server
+
+    Gitorious.org uses Varnish for caching, but Nginx works in a
+    similar fashion. There are a couple of heavily-used actions in
+    Gitorious which have been optimized for caching:
+
+    - The URLs used internally when resolving an incoming URL to a
+      location on disk
+    - Commit diffs
+
+    These are delivered without =Set-Cookie= headers and with
+    appropriate =Cache-Control= headers, while most other actions in
+    Gitorious will not be cacheable.
+
+    To set up caching in Nginx, first define a cache zone in your
+    configuration files (at the top level)
+
+#+BEGIN_SRC conf
+proxy_cache_path /var/cache/nginx/gitorious levels=1:2 keys_zone=gitorious:128m;
+#+END_SRC
+
+    Then, inside a =location= block where you define the backend
+    proxy, add the following:
+
+#+BEGIN_SRC conf
+# Use the cache zone gitorious
+proxy_cache gitorious;
+
+# Add a header displaying the cache status
+add_header X-Cache-Status $upstream_cache_status;
+#+END_SRC
+
+    This will enable caching where appropriate, and additionally add
+    a =X-Cache-Status= header to your responses, indicating whether
+    the response from the backend was cached.
+
 *** Caching with Varnish
 *** Horizontal scaling
     what sort of hardware will you need to keep a single server running
