@@ -856,7 +856,7 @@ common_stylesheets:
     your server, enter this in a terminal on the server:
 
 #+BEGIN_EXAMPLE
-wget https://d108pufawv7tg5.cloudfront.net/gitorious-ce-va-v2.4.9.ova
+wget https://dwa2rvxkle6ff.cloudfront.net/gitorious-ce-va-v2.4.9.ova
 #+END_EXAMPLE
 
 **** Extract the vmdk file from the ova file
